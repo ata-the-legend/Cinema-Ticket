@@ -2,6 +2,7 @@ import uuid, hashlib
 from extra import save, get_object, delete
 from datetime import datetime
 from enum import Enum
+from custom_exception import PasswordError, UsernameError, RegisterError, LoginError
 
 
 class DebitCardType(Enum):
@@ -45,9 +46,9 @@ class User:
         :return: None if password was correct. or rais error if not valid
         """
         if password == '' or password.isspace():
-            raise ValueError('\n--- your password was empty! you must set password ---\n')
+            raise PasswordError('\n--- your password was empty! you must set password ---\n')
         elif len(password) < 4:
-            raise ValueError('\n--- The length of the password must be more than 4 characters! ---\n')
+            raise PasswordError('\n--- The length of the password must be more than 4 characters! ---\n')
         return None  # why wrong with false?
 
     @staticmethod
@@ -58,7 +59,7 @@ class User:
         :return:
         """
         if len(username) == 0:
-            raise ValueError('\n--- your username was empty! you must set password ---\n')
+            raise UsernameError('\n--- your username was empty! you must set password ---\n')
         return None # false?
 
     @staticmethod
@@ -104,7 +105,7 @@ class User:
         elif User.validate_username(username): ####
             return cls.validate_username(username) #####
         elif User.authenticated(username):
-            raise ValueError('\n--- Registration failed , This username already exist! ---\n')
+            raise RegisterError('\n--- Registration failed , This username already exist! ---\n')
         else:
             password = cls.build_pass(password)
 
@@ -131,9 +132,9 @@ class User:
             if user._User__password == hashed_password:
                 return user
             else:
-                raise ValueError('--- incorrect password ---')
+                raise PasswordError('--- incorrect password ---')
         else:
-            raise ValueError(f" --- There is no account with this username : {username} ---\n"
+            raise LoginError(f" --- There is no account with this username : {username} ---\n"
                              f" --- Please register and try again. ---")
 
     @classmethod
@@ -172,14 +173,15 @@ class User:
                     new = self.build_pass(new)
                     delete(self.username)
                     debit_card_type = DebitCardType(self.debit_card_type)
-                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime, debit_card_type, self.phone_number)
+                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime,
+                                debit_card_type, self.phone_number)
                     save(vars(user))
                     return user
                 return self.validate_pass(new)
             else:
-                raise ValueError('--- new password and confirm password not mach ---')
+                raise PasswordError('--- new password and confirm password not mach ---')
         else:
-            raise ValueError('--- your old is invalid ---')
+            raise PasswordError('--- your old is invalid ---')
 
     @staticmethod
     def match_pass(p1: str, p2: str) -> bool: 
@@ -205,6 +207,3 @@ class User:
                f'Birthdate = {self.birthdate}\n' \
                f'Sign up Date = {self.signup_datetime}\n' \
                f'User Level = {self.debit_card_type}'
-
-
-
