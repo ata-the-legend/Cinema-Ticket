@@ -1,10 +1,17 @@
 import uuid, hashlib
 from extra import save, get_object, delete
 from datetime import datetime
+from enum import Enum
+
+
+class DebitCardType(Enum):
+    BRONZE = 1
+    SILVER = 2
+    GOLD = 3
 
 
 class User:
-    def __init__(self, username: str, password: str, birthday=None, phone_number: str = None, id: str = None) -> None:
+    def __init__(self, username: str, password: str, debit_card_type: DebitCardType, birthday=None,phone_number: str = None, id: str = None) -> None:
         """
         this is initializer for User class
         :param username: input username
@@ -22,6 +29,7 @@ class User:
         self.signup_datetime = str(datetime.now())
         self.cinema_debit_card = 0
         self.bank_accounts = {}
+        self.debit_card_type = debit_card_type
 
     def show_bank_account(self):
         ...
@@ -92,8 +100,8 @@ class User:
             return cls.validate_username(username)
         elif User.authenticated(username) is None:
             password = cls.build_pass(password)
-
-            user = User(username, password, phone_number, id)
+            debit_card_type = DebitCardType.BRONZE
+            user = User(username, password, debit_card_type, phone_number, id)
             save(vars(user))
         else:
             raise ValueError('\n--- Registration failed , This username already exist! ---\n')
@@ -130,7 +138,7 @@ class User:
             return cls.validate_username(new_username)
         user = get_object(username)
         delete(username)
-        user = cls(new_username, user['_User__password'], new_phone_number, user['id'])
+        user = cls(new_username, user['_User__password'], user['debit_card_type'], new_phone_number, user['id'])
         save(vars(user))
         return user
 
@@ -148,7 +156,7 @@ class User:
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
-                    user = User(self.username, new, self.phone_number, self.id)
+                    user = User(self.username, new, self.debit_card_type, self.phone_number, self.id)
                     save(vars(user))
                     return user
                 return self.validate_pass(new)
