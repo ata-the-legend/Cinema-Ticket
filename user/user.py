@@ -30,7 +30,7 @@ class User:
         self.__password = password
         self.birthdate = birthdate
         self.signup_datetime = signup_datetime
-        self.role = user_role.value
+        self.user_role = user_role.value
         self.cinema_debit_card = 0
         self.bank_accounts = []
         self.debit_card_type = debit_card_type.value
