@@ -10,9 +10,12 @@ class DebitCardType(Enum):
     SILVER = 2
     GOLD = 3
 
+class UserRole(Enum):
+    PUBLIC = 0
+    STAFF = 1
 
 class User:
-    def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str, 
+    def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str, user_role: UserRole,
                  debit_card_type: DebitCardType, phone_number: str = None) -> None:
 
         """
@@ -22,15 +25,13 @@ class User:
         :param phone_number: input phone number
         :param user_id: generated auto user_id
         """
-        # if user_id is None:
-        #     self.user_id = str(uuid.uuid4())
-        # else:
         self.user_id = user_id
         self.username = username
         self.phone_number = phone_number
         self.__password = password
         self.birthdate = birthdate
         self.signup_datetime = signup_datetime
+        self.role = user_role.value
         self.cinema_debit_card = 0
         self.bank_accounts = []
         self.debit_card_type = debit_card_type.value
@@ -85,8 +86,11 @@ class User:
         """
         user = get_object(username)
         if user is not None:
+
             debit_card_type = DebitCardType(user['debit_card_type'])
-            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'], user['signup_datetime'],debit_card_type, user['phone_number']) 
+            user_role = UserRole(user['user_role'])
+            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'], user['signup_datetime'], 
+                       user_role, debit_card_type, user['phone_number']) 
             return user
         else:
             return None ##??
@@ -112,11 +116,15 @@ class User:
             user_id = str(uuid.uuid4())
             signup_datetime = str(datetime.now())
             debit_card_type = DebitCardType.BRONZE
-            user = User(username, password, birthdate, user_id, signup_datetime, debit_card_type, phone_number)
+            user_role = UserRole.PUBLIC
+            user = User(username, password, birthdate, user_id, signup_datetime, user_role, debit_card_type, phone_number)
 
             save(vars(user))
         
         ## check phone number
+
+    def create_staff_user():
+        ...
 
     @classmethod
     def login(cls, username: str, password: str) -> object:
@@ -151,8 +159,10 @@ class User:
         user = get_object(username) 
         delete(username)
         debit_card_type = DebitCardType(user['debit_card_type'])
+        user_role = UserRole(user['user_role'])
         user = cls(new_username, user['_User__password'], user['birthdate'], user['user_id'],
-                   user['signup_datetime'], debit_card_type, new_phone_number) 
+                   user['signup_datetime'], user_role, debit_card_type, new_phone_number) 
+
         save(vars(user))
         return user
     
@@ -172,9 +182,10 @@ class User:
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
+                    user_role = UserRole(self.user_role)
                     debit_card_type = DebitCardType(self.debit_card_type)
                     user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime,
-                                debit_card_type, self.phone_number)
+                                user_role, debit_card_type, self.phone_number)
                     save(vars(user))
                     return user
                 return self.validate_pass(new)
