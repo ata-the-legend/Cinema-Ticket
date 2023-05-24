@@ -11,7 +11,8 @@ class DebitCardType(Enum):
 
 
 class User:
-    def __init__(self, username: str, password: str, debit_card_type: DebitCardType, birthday=None,phone_number: str = None, id: str = None) -> None:
+    def __init__(self, username: str, password: str, debit_card_type: DebitCardType,
+                 birthday=None, phone_number: str = None, id: str = None) -> None:
         """
         this is initializer for User class
         :param username: input username
@@ -28,7 +29,7 @@ class User:
         self.__password = password
         self.signup_datetime = str(datetime.now())
         self.cinema_debit_card = 0
-        self.bank_accounts = {}
+        self.bank_accounts = []
         self.debit_card_type = debit_card_type
 
     def show_bank_account(self):
