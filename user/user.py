@@ -33,7 +33,7 @@ class User:
         self.role = user_role.value
         self.cinema_debit_card = 0
         self.bank_accounts = []
-        self.debit_card_type = debit_card_type
+        self.debit_card_type = debit_card_type.value
 
     def show_bank_account(self):
         ...
@@ -85,8 +85,11 @@ class User:
         """
         user = get_object(username)
         if user is not None:
-            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'],
-                        user['signup_datetime'], user['user_role'], user['debit_card_type'], user['phone_number']) 
+
+            debit_card_type = DebitCardType(user['debit_card_type'])
+            user_role = UserRole(user['user_role'])
+            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'], user['signup_datetime'], 
+                       user_role, debit_card_type, user['phone_number']) 
             return user
         else:
             return None ##??
@@ -154,8 +157,11 @@ class User:
             return cls.validate_username(new_username) ######
         user = get_object(username) 
         delete(username)
+        debit_card_type = DebitCardType(user['debit_card_type'])
+        user_role = UserRole(user['user_role'])
         user = cls(new_username, user['_User__password'], user['birthdate'], user['user_id'],
-                   user['signup_datetime'], user['user_role'], user['debit_card_type'], new_phone_number) 
+                   user['signup_datetime'], user_role, debit_card_type, new_phone_number) 
+
         save(vars(user))
         return user
     
@@ -175,7 +181,10 @@ class User:
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
-                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime, self.user_role, self.debit_card_type, self.phone_number)
+                    user_role = UserRole(self.user_role)
+                    debit_card_type = DebitCardType(self.debit_card_type)
+                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime, user_role, debit_card_type, self.phone_number)
+
                     save(vars(user))
                     return user
                 return self.validate_pass(new)
