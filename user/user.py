@@ -11,23 +11,25 @@ class DebitCardType(Enum):
 
 
 class User:
-    def __init__(self, username: str, password: str, debit_card_type: DebitCardType,
-                 birthday=None, phone_number: str = None, id: str = None) -> None:
+    def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str, 
+                 debit_card_type: DebitCardType, phone_number: str = None) -> None:
+
         """
         this is initializer for User class
         :param username: input username
         :param password: input password
         :param phone_number: input phone number
-        :param id: generated auto id
+        :param user_id: generated auto user_id
         """
-        if id is None:
-            self.id = str(uuid.uuid4())
-        else:
-            self.id = id
+        # if user_id is None:
+        #     self.user_id = str(uuid.uuid4())
+        # else:
+        self.user_id = user_id
         self.username = username
         self.phone_number = phone_number
         self.__password = password
-        self.signup_datetime = str(datetime.now())
+        self.birthdate = birthdate
+        self.signup_datetime = signup_datetime
         self.cinema_debit_card = 0
         self.bank_accounts = []
         self.debit_card_type = debit_card_type
@@ -42,11 +44,11 @@ class User:
         :param password: password for check
         :return: None if password was correct. or rais error if not valid
         """
-        if len(password) == 0:
+        if password == '' or password.isspace():
             raise ValueError('\n--- your password was empty! you must set password ---\n')
         elif len(password) < 4:
             raise ValueError('\n--- The length of the password must be more than 4 characters! ---\n')
-        return None
+        return None  # why wrong with false?
 
     @staticmethod
     def validate_username(username: str) -> None:
@@ -57,7 +59,7 @@ class User:
         """
         if len(username) == 0:
             raise ValueError('\n--- your username was empty! you must set password ---\n')
-        return None
+        return None # false?
 
     @staticmethod
     def build_pass(password: str) -> str:
@@ -71,6 +73,7 @@ class User:
         p_hash.update(password)
         password = p_hash.hexdigest()
         return password
+        # return password = hashlib.sha256(password.encode()).hexdigest()
 
     @classmethod
     def authenticated(cls, username: str) -> object | None:
@@ -81,31 +84,37 @@ class User:
         """
         user = get_object(username)
         if user is not None:
-            user = cls(user['username'], user['_User__password'], user['phone_number'])
+            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'], user['signup_datetime'], user['phone_number']) 
             return user
         else:
-            return None
+            return None ##??
 
     @classmethod
-    def create_user(cls, username: str, password: str, phone_number:str =None, id:str =None) -> None:
+    def create_user(cls, username: str, password: str, birthdate: str, phone_number:str =None) -> None:
         """
         this method create user and save to database
         :param username: input username
         :param password: input password
         :param phone_number: input phone_number
-        :param id: id
+        :param user_id: user_id
         """
-        if User.validate_pass(password):
-            return cls.validate_pass(password)
-        elif User.validate_username(username):
-            return cls.validate_username(username)
-        elif User.authenticated(username) is None:
-            password = cls.build_pass(password)
-            debit_card_type = DebitCardType.BRONZE
-            user = User(username, password, debit_card_type, phone_number, id)
-            save(vars(user))
-        else:
+        if User.validate_pass(password): # these are never can be true
+            return cls.validate_pass(password) #this line never runs
+        elif User.validate_username(username): ####
+            return cls.validate_username(username) #####
+        elif User.authenticated(username):
             raise ValueError('\n--- Registration failed , This username already exist! ---\n')
+        else:
+            password = cls.build_pass(password)
+
+            user_id = str(uuid.uuid4())
+            signup_datetime = str(datetime.now())
+            debit_card_type = DebitCardType.BRONZE
+            user = User(username, password, birthdate, user_id, signup_datetime, debit_card_type, phone_number)
+
+            save(vars(user))
+        
+        ## check phone number
 
     @classmethod
     def login(cls, username: str, password: str) -> object:
@@ -135,13 +144,16 @@ class User:
         :param new_phone_number: new phone number
         :return: updated user object
         """
-        if cls.validate_username(new_username):
-            return cls.validate_username(new_username)
-        user = get_object(username)
+        if cls.validate_username(new_username): ####
+            return cls.validate_username(new_username) ######
+        user = get_object(username) 
         delete(username)
-        user = cls(new_username, user['_User__password'], user['debit_card_type'], new_phone_number, user['id'])
+        user = cls(new_username, user['_User__password'], user['birthdate'], user['user_id'],
+                   user['signup_datetime'], user['debit_card_type'], new_phone_number) 
         save(vars(user))
         return user
+    
+        ## check phone number or be optional
 
     def change_password(self, old: str, new: str, confirm_new: str) -> object:
         """
@@ -153,11 +165,11 @@ class User:
         """
         old = self.build_pass(old)
         if old == self._User__password:
-            if self.match_pass(new, confirm_new):
+            if self.match_pass(new, confirm_new): ## this could be checked for more safty and diferent messages
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
-                    user = User(self.username, new, self.debit_card_type, self.phone_number, self.id)
+                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime, self.debit_card_type, self.phone_number)
                     save(vars(user))
                     return user
                 return self.validate_pass(new)
@@ -167,7 +179,7 @@ class User:
             raise ValueError('--- your old is invalid ---')
 
     @staticmethod
-    def match_pass(p1: str, p2: str) -> bool:
+    def match_pass(p1: str, p2: str) -> bool: 
         """
         passwords matching
         :param p1: password
@@ -183,9 +195,13 @@ class User:
         this is class str for present class object.
         :return: public information.
         """
-        id, username, phone_number = self.id, self.username, self.phone_number
-        return f'\nid = {id}\n' \
-               f'username = {username}\n' \
-               f'phone_number = {phone_number}'
+        user_id, username, phone_number = self.user_id, self.username, self.phone_number
+        return f'\nID = {user_id}\n' \
+               f'Username = {username}\n' \
+               f'Phone_number = {phone_number}\n' \
+               f'Birthdate = {self.birthdate}\n' \
+               f'Sign up Date = {self.signup_datetime}\n' \
+               f'User Level = {self.debit_card_type}'
+
 
 
