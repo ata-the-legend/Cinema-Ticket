@@ -30,7 +30,7 @@ class User:
         self.signup_datetime = str(datetime.now())
         self.cinema_debit_card = 0
         self.bank_accounts = []
-        self.debit_card_type = debit_card_type
+        self.debit_card_type = debit_card_type.value
 
     def show_bank_account(self):
         ...
@@ -81,7 +81,8 @@ class User:
         """
         user = get_object(username)
         if user is not None:
-            user = cls(user['username'], user['_User__password'], user['phone_number'])
+            debit_card_type = DebitCardType(user['debit_card_type'])
+            user = cls(user['username'], user['_User__password'], debit_card_type, user['phone_number'])
             return user
         else:
             return None
@@ -139,7 +140,8 @@ class User:
             return cls.validate_username(new_username)
         user = get_object(username)
         delete(username)
-        user = cls(new_username, user['_User__password'], user['debit_card_type'], new_phone_number, user['id'])
+        debit_card_type = DebitCardType(user['debit_card_type'])
+        user = cls(new_username, user['_User__password'], debit_card_type, new_phone_number, user['id'])
         save(vars(user))
         return user
 
@@ -157,7 +159,8 @@ class User:
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
-                    user = User(self.username, new, self.debit_card_type, self.phone_number, self.id)
+                    debit_card_type = DebitCardType(self.debit_card_type)
+                    user = User(self.username, new, debit_card_type, self.phone_number, self.id)
                     save(vars(user))
                     return user
                 return self.validate_pass(new)
