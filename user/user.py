@@ -1,10 +1,19 @@
 import uuid, hashlib
 from extra import save, get_object, delete
 from datetime import datetime
+from enum import Enum
+
+
+class DebitCardType(Enum):
+    BRONZE = 1
+    SILVER = 2
+    GOLD = 3
 
 
 class User:
-    def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str, phone_number: str = None) -> None:
+    def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str, 
+                 debit_card_type: DebitCardType, phone_number: str = None) -> None:
+
         """
         this is initializer for User class
         :param username: input username
@@ -22,7 +31,8 @@ class User:
         self.birthdate = birthdate
         self.signup_datetime = signup_datetime
         self.cinema_debit_card = 0
-        self.bank_accounts = {}
+        self.bank_accounts = []
+        self.debit_card_type = debit_card_type
 
     def show_bank_account(self):
         ...
@@ -96,9 +106,12 @@ class User:
             raise ValueError('\n--- Registration failed , This username already exist! ---\n')
         else:
             password = cls.build_pass(password)
+
             user_id = str(uuid.uuid4())
             signup_datetime = str(datetime.now())
-            user = User(username, password, birthdate, user_id, signup_datetime, phone_number)
+            debit_card_type = DebitCardType.BRONZE
+            user = User(username, password, birthdate, user_id, signup_datetime, debit_card_type, phone_number)
+
             save(vars(user))
         
         ## check phone number
@@ -135,7 +148,8 @@ class User:
             return cls.validate_username(new_username) ######
         user = get_object(username) 
         delete(username)
-        user = cls(new_username, user['_User__password'], user['birthdate'], user['user_id'], user['signup_datetime'], new_phone_number) 
+        user = cls(new_username, user['_User__password'], user['birthdate'], user['user_id'],
+                   user['signup_datetime'], user['debit_card_type'], new_phone_number) 
         save(vars(user))
         return user
     
@@ -155,7 +169,7 @@ class User:
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
-                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime, self.phone_number)
+                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime, self.debit_card_type, self.phone_number)
                     save(vars(user))
                     return user
                 return self.validate_pass(new)
@@ -165,7 +179,7 @@ class User:
             raise ValueError('--- your old is invalid ---')
 
     @staticmethod
-    def match_pass(p1: str, p2: str) -> bool: # really?
+    def match_pass(p1: str, p2: str) -> bool: 
         """
         passwords matching
         :param p1: password
@@ -182,11 +196,12 @@ class User:
         :return: public information.
         """
         user_id, username, phone_number = self.user_id, self.username, self.phone_number
-        return f'\nid = {user_id}\n' \
-               f'username = {username}\n' \
-               f'phone_number = {phone_number}\n' \
+        return f'\nID = {user_id}\n' \
+               f'Username = {username}\n' \
+               f'Phone_number = {phone_number}\n' \
                f'Birthdate = {self.birthdate}\n' \
-               f'Sign up Date = {self.signup_datetime}'
+               f'Sign up Date = {self.signup_datetime}\n' \
+               f'User Level = {self.debit_card_type}'
 
 
 
