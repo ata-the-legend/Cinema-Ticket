@@ -32,7 +32,7 @@ class User:
         self.signup_datetime = signup_datetime
         self.cinema_debit_card = 0
         self.bank_accounts = []
-        self.debit_card_type = debit_card_type
+        self.debit_card_type = debit_card_type.value
 
     def show_bank_account(self):
         ...
@@ -84,7 +84,8 @@ class User:
         """
         user = get_object(username)
         if user is not None:
-            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'], user['signup_datetime'], user['phone_number']) 
+            debit_card_type = DebitCardType(user['debit_card_type'])
+            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'], user['signup_datetime'],debit_card_type, user['phone_number']) 
             return user
         else:
             return None ##??
@@ -148,8 +149,9 @@ class User:
             return cls.validate_username(new_username) ######
         user = get_object(username) 
         delete(username)
+        debit_card_type = DebitCardType(user['debit_card_type'])
         user = cls(new_username, user['_User__password'], user['birthdate'], user['user_id'],
-                   user['signup_datetime'], user['debit_card_type'], new_phone_number) 
+                   user['signup_datetime'], debit_card_type, new_phone_number) 
         save(vars(user))
         return user
     
@@ -169,7 +171,8 @@ class User:
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
-                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime, self.debit_card_type, self.phone_number)
+                    debit_card_type = DebitCardType(self.debit_card_type)
+                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime, debit_card_type, self.phone_number)
                     save(vars(user))
                     return user
                 return self.validate_pass(new)
