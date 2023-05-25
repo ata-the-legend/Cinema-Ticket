@@ -125,6 +125,11 @@ class User:
     def create_staff_user():
         ...
 
+    def promote_to_staff(self) -> None:
+        self.user_role = UserRole.STAFF.value
+        delete(self.username)
+        save(vars(self))
+
     @classmethod
     def login(cls, username: str, password: str) -> object:
         """
@@ -216,7 +221,7 @@ class User:
                f'Phone_number = {phone_number}\n' \
                f'Birthdate = {self.birthdate}\n' \
                f'Sign up Date = {self.signup_datetime}\n' \
-               f'User Level = {self.debit_card_type}'
+               f'User Level = {DebitCardType(self.debit_card_type).name}'
 
 
 
