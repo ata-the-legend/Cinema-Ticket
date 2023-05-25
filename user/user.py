@@ -2,6 +2,7 @@ import uuid, hashlib
 from extra import save, get_object, delete
 from datetime import datetime
 from enum import Enum
+import time
 
 
 class DebitCardType(Enum):
@@ -103,6 +104,7 @@ class User:
         :param phone_number: input phone_number
         :param user_id: user_id
         """
+        time.strptime(birthdate, '%Y-%m-%d') # it will raise error for wrong input format
         if User.validate_pass(password): # these are never can be true
             return cls.validate_pass(password) #this line never runs
         elif User.validate_username(username): ####
@@ -122,8 +124,6 @@ class User:
         
         ## check phone number
 
-    def create_staff_user():
-        ...
 
     def promote_to_staff(self) -> None:
         self.user_role = UserRole.STAFF.value
