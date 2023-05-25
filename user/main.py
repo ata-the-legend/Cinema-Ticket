@@ -18,7 +18,11 @@ def main():
                     username = input('Username: ')
                     password = pwinput.pwinput(prompt='Password: ', mask='*')
                     phone_number = input('Phone number (optional): ')
-                    User.create_user(username, password, phone_number)
+                    birthdate = input('Birthdate:(year-month-day) ') 
+                    if phone_number.isspace() or not phone_number: 
+                        User.create_user(username, password, birthdate)
+                    else:
+                        User.create_user(username, password, birthdate, phone_number)
                     print('\n--- Your registration was successful ---\n')
                 except Exception as e:
                     print(str(e))

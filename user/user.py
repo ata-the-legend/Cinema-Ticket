@@ -2,6 +2,7 @@ import uuid, hashlib
 from extra import save, get_object, delete
 from datetime import datetime
 from enum import Enum
+import time
 from custom_exception import PasswordError, UsernameError, RegisterError, LoginError
 
 
@@ -31,7 +32,7 @@ class User:
         self.__password = password
         self.birthdate = birthdate
         self.signup_datetime = signup_datetime
-        self.role = user_role.value
+        self.user_role = user_role.value
         self.cinema_debit_card = 0
         self.bank_accounts = []
         self.debit_card_type = debit_card_type.value
@@ -104,6 +105,7 @@ class User:
         :param phone_number: input phone_number
         :param user_id: user_id
         """
+        time.strptime(birthdate, '%Y-%m-%d') # it will raise error for wrong input format
         if User.validate_pass(password): # these are never can be true
             return cls.validate_pass(password) #this line never runs
         elif User.validate_username(username): ####
@@ -123,8 +125,11 @@ class User:
         
         ## check phone number
 
-    def create_staff_user():
-        ...
+
+    def promote_to_staff(self) -> None:
+        self.user_role = UserRole.STAFF.value
+        delete(self.username)
+        save(vars(self))
 
     @classmethod
     def login(cls, username: str, password: str) -> object:
@@ -217,4 +222,4 @@ class User:
                f'Phone_number = {phone_number}\n' \
                f'Birthdate = {self.birthdate}\n' \
                f'Sign up Date = {self.signup_datetime}\n' \
-               f'User Level = {self.debit_card_type}'
+               f'User Level = {DebitCardType(self.debit_card_type).name}'
