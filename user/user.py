@@ -161,7 +161,7 @@ class User:
         """
         if cls.validate_username(new_username): ####
             return cls.validate_username(new_username) ######
-        user = get_object(username) 
+        user = get_object(username)
         delete(username)
         debit_card_type = DebitCardType(user['debit_card_type'])
         user_role = UserRole(user['user_role'])
