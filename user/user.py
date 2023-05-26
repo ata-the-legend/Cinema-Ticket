@@ -107,7 +107,6 @@ class User:
         :param phone_number: input phone_number
         :param user_id: user_id
         """
-        time.strptime(birthdate, '%Y-%m-%d') # it will raise error for wrong input format
         if User.validate_pass(password): # these are never can be true
             return cls.validate_pass(password) #this line never runs
         elif User.validate_username(username): ####
@@ -115,8 +114,8 @@ class User:
         elif User.authenticated(username):
             raise RegisterError('\n--- Registration failed , This username already exist! ---\n')
         else:
+            time.strptime(birthdate, '%Y-%m-%d') # it will raise error for wrong input format
             password = cls.build_pass(password)
-
             user_id = str(uuid.uuid4())
             signup_datetime = str(datetime.now())
             debit_card_type = DebitCardType.BRONZE
@@ -159,15 +158,10 @@ class User:
         """
         if self.validate_username(new_username): ####
             return self.validate_username(new_username) ######
-        user = get_object(self.username)
         delete(self.username)
-        debit_card_type = DebitCardType(user['debit_card_type'])
-        user_role = UserRole(user['user_role'])
-        user = User(new_username, user['_User__password'], user['birthdate'], user['user_id'],
-                    user['signup_datetime'], user_role, debit_card_type, new_phone_number)
-
-        save(vars(user))
-        return user
+        self.username = new_username
+        self.phone_number = new_phone_number
+        save(vars(self))
     
         ## check phone number or be optional
 
@@ -185,12 +179,8 @@ class User:
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
-                    user_role = UserRole(self.user_role)
-                    debit_card_type = DebitCardType(self.debit_card_type)
-                    user = User(self.username, new, self.birthdate, self.user_id, self.signup_datetime,
-                                user_role, debit_card_type, self.phone_number)
-                    save(vars(user))
-                    return user
+                    self.__password = new
+                    save(vars(self))
                 return self.validate_pass(new)
             else:
                 raise PasswordError('--- new password and confirm password not mach ---')

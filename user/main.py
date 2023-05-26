@@ -57,9 +57,9 @@ def main():
                                             new_username = user.username
                                         if new_phone_number == '':
                                             new_phone_number = user.phone_number
-                                        user = User.change_info(user, new_username, new_phone_number)
-                                        if user is not str:
-                                            print('\n--- your account is updated successfully ---')
+                                        user.change_info(new_username, new_phone_number)
+                                        # if user is not str: ##??
+                                        print('\n--- your account is updated successfully ---')
                                     except Exception as e:
                                         print(str(e))
                                 case '3':
@@ -68,7 +68,7 @@ def main():
                                         old_password = pwinput.pwinput('old_password : ')
                                         new_password = pwinput.pwinput('new_password : ')
                                         confirm_new_password = pwinput.pwinput('confirm_new_password : ')
-                                        user = User.change_password(user, old_password, new_password,
+                                        user.change_password(old_password, new_password,
                                                                     confirm_new_password)
                                         print('--- your password updated successfully ---')
                                     except Exception as e:
