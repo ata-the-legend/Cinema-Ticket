@@ -3,6 +3,7 @@ from uuid import uuid4
 
 class BankAccount:
     accounts_dict = {}
+    BANK_TRANSFER_FEE = 1_000
 
     def __init__(self, owner_name: str, bank: str, balance: int):
         self.owner_name = owner_name
@@ -98,3 +99,61 @@ Serial Number >>>   {serial_number}\n\
 CVV2          >>>   {cvv2}\n\
 Password      >>>   {password}\n\
 Balance       >>>   {balance:,}"
+
+    def add(self, amount: int) -> int:
+        """
+        Add a certain amount to the account's balance
+
+        Args:
+            amount (int): and must be greater than 0
+
+        Raises:
+            ValueError: will raise when the Args condition are not ready
+
+        Returns:
+            int: update the account's balance with the int number
+        """
+
+        if amount < 0:
+            raise ValueError("Invalid Amount")
+        self.__balance += amount
+        return self.__balance
+
+    def sub(self, amount: int) -> int:
+        """
+        Subtracts a certain amount from the account's balance
+
+        Args:
+            amount (int): and must be greater than 0
+
+        Raises:
+            ValueError: will raise when the Args condition are not ready
+            ValueError: will raise when there is not enough amount of money
+                        in account's balance for withdrawal
+
+        Returns:
+            int: update the account's balance with the int number
+        """
+
+        if amount < 0:
+            raise ValueError("Invalid Amount")
+        self.__balance -= amount
+        if self.__balance < 0 :
+            raise ValueError("Insufficient Inventory")
+        return self.__balance
+
+    def transfer_to_another(self, other: "BankAccount", amount: int) -> None:
+        """
+        Transfer a certain amount of money
+        from first object to the second object that mentioned in Args
+        ! the first account will pay 1000 more as banking fees
+
+        Args:
+            other (BankAccount): an object from BankAccount class
+            that its account take the money is deposited
+            amount (int): the amount of money that will transfer
+            (excluding bank transfer fees)
+        """
+
+        self.sub(amount + self.BANK_TRANSFER_FEE)
+        other.add(amount)
