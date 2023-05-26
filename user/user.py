@@ -221,3 +221,14 @@ class User:
                f'Birthdate = {self.birthdate}\n' \
                f'Sign up Date = {self.signup_datetime}\n' \
                f'User Level = {UserRole(self.user_role).name}'
+
+    def save_bank_account(self, serial_number) -> None:
+        """
+        Adds bank account serial number to users bank accounts list.
+
+        Args:
+            serial_number (str): Serial number of bank account
+        """
+        self.bank_accounts.append(serial_number)
+        delete(self.username)
+        save(vars(self))
