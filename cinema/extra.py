@@ -30,14 +30,14 @@ def save(season: dict) -> None:
         print('You have error', ex)
 
 
-def delete(season: str) -> None:
+def delete(season_name: str) -> None:
     """
     delete user object from database
-    :param season: username of user account
+    :param season_name: username of user account
     :return: None
     """
     dic = get_database()
-    del dic[season]
+    del dic[season_name]
     try:
         with open("cinema.json", "w") as fp:
             json.dump(dic, fp, indent=4)  # encode dict into JSON
