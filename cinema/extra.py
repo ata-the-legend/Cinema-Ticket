@@ -21,8 +21,8 @@ def save(season: dict) -> None:
     :return: None
     """
     dic = get_database()
-    username = season['username']
-    dic.update({username: season})
+    season_name = season['season_name']
+    dic.update({season_name: season})
     try:
         with open("cinema.json", "w") as fp:
             json.dump(dic, fp, indent=4)  # encode dict into JSON
@@ -45,18 +45,18 @@ def delete(season: str) -> None:
         print('You have error', ex)
 
 
-def get_object(username: str) -> dict | None:
+def get_object(season_name: str) -> dict | None:
     """
     get object from database
-    :param username: username
+    :param season_name: username
     :return: user object
     """
     try:
         with open("cinema.json", "r") as fp:
             # Load the dictionary from the file
-            person_dict = json.load(fp)
-            user = person_dict[username]
-            return user
+            season_dict = json.load(fp)
+            season = season_dict[season_name]
+            return season
     except Exception:
         return None
 
