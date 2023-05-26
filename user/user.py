@@ -11,13 +11,15 @@ class DebitCardType(Enum):
     SILVER = 2
     GOLD = 3
 
+
 class UserRole(Enum):
     PUBLIC = 0
     STAFF = 1
 
+
 class User:
-    def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str, user_role: UserRole,
-                 debit_card_type: DebitCardType, phone_number: str = None) -> None:
+    def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str,
+                 user_role: UserRole, debit_card_type: DebitCardType, phone_number: str = None) -> None:
 
         """
         this is initializer for User class
@@ -90,8 +92,8 @@ class User:
 
             debit_card_type = DebitCardType(user['debit_card_type'])
             user_role = UserRole(user['user_role'])
-            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'], user['signup_datetime'], 
-                       user_role, debit_card_type, user['phone_number']) 
+            user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'],
+                       user['signup_datetime'], user_role, debit_card_type, user['phone_number'])
             return user
         else:
             return None ##??
@@ -120,11 +122,9 @@ class User:
             debit_card_type = DebitCardType.BRONZE
             user_role = UserRole.PUBLIC
             user = User(username, password, birthdate, user_id, signup_datetime, user_role, debit_card_type, phone_number)
-
             save(vars(user))
-        
-        ## check phone number
 
+        ## check phone number
 
     def promote_to_staff(self) -> None:
         self.user_role = UserRole.STAFF.value
@@ -150,23 +150,21 @@ class User:
             raise LoginError(f" --- There is no account with this username : {username} ---\n"
                              f" --- Please register and try again. ---")
 
-    @classmethod
-    def change_info(cls, username: str, new_username: str, new_phone_number: str) -> object:
+    def change_info(self, new_username: str, new_phone_number: str) -> object:
         """
         this method change username or phone number
-        :param username: old username
         :param new_username: new user-name
         :param new_phone_number: new phone number
         :return: updated user object
         """
-        if cls.validate_username(new_username): ####
-            return cls.validate_username(new_username) ######
-        user = get_object(username)
-        delete(username)
+        if self.validate_username(new_username): ####
+            return self.validate_username(new_username) ######
+        user = get_object(self.username)
+        delete(self.username)
         debit_card_type = DebitCardType(user['debit_card_type'])
         user_role = UserRole(user['user_role'])
-        user = cls(new_username, user['_User__password'], user['birthdate'], user['user_id'],
-                   user['signup_datetime'], user_role, debit_card_type, new_phone_number) 
+        user = User(new_username, user['_User__password'], user['birthdate'], user['user_id'],
+                    user['signup_datetime'], user_role, debit_card_type, new_phone_number)
 
         save(vars(user))
         return user
@@ -222,4 +220,4 @@ class User:
                f'Phone_number = {phone_number}\n' \
                f'Birthdate = {self.birthdate}\n' \
                f'Sign up Date = {self.signup_datetime}\n' \
-               f'User Level = {DebitCardType(self.debit_card_type).name}'
+               f'User Level = {UserRole(self.user_role).name}'

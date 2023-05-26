@@ -8,5 +8,17 @@
         "cinema_debit_card": 0,
         "bank_accounts": [],
         "debit_card_type": 1
+    },
+    "saba": {
+        "user_id": "002ff597-2852-421a-bfed-85841caaca76",
+        "username": "saba",
+        "phone_number": "0990",
+        "_User__password": "a1fb4e703a9ef1fa4936801721ff285a97ac85330856674412e054892afe6972",
+        "birthdate": "1889-12-01",
+        "signup_datetime": "2023-05-26 22:47:42.234638",
+        "user_role": 0,
+        "cinema_debit_card": 0,
+        "bank_accounts": [],
+        "debit_card_type": 1
     }
 }

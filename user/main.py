@@ -57,7 +57,7 @@ def main():
                                             new_username = user.username
                                         if new_phone_number == '':
                                             new_phone_number = user.phone_number
-                                        user = User.change_info(username, new_username, new_phone_number)
+                                        user = User.change_info(user, new_username, new_phone_number)
                                         if user is not str:
                                             print('\n--- your account is updated successfully ---')
                                     except Exception as e:
