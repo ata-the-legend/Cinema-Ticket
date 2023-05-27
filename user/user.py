@@ -99,7 +99,7 @@ class User:
             return None ##??
 
     @classmethod
-    def create_user(cls, username: str, password: str, birthdate: str, phone_number:str =None) -> None:
+    def create_user(cls, username: str, password: str, birthdate: str, phone_number:str =None) -> 'User':
         """
         this method create user and save to database
         :param username: input username
@@ -122,6 +122,7 @@ class User:
             user_role = UserRole.PUBLIC
             user = User(username, password, birthdate, user_id, signup_datetime, user_role, debit_card_type, phone_number)
             save(vars(user))
+            return user
 
         ## check phone number
 
@@ -149,12 +150,11 @@ class User:
             raise LoginError(f" --- There is no account with this username : {username} ---\n"
                              f" --- Please register and try again. ---")
 
-    def change_info(self, new_username: str, new_phone_number: str) -> object:
+    def change_info(self, new_username: str, new_phone_number: str) -> None:
         """
         this method change username or phone number
         :param new_username: new user-name
         :param new_phone_number: new phone number
-        :return: updated user object
         """
         if self.validate_username(new_username): ####
             return self.validate_username(new_username) ######
@@ -165,13 +165,12 @@ class User:
     
         ## check phone number or be optional
 
-    def change_password(self, old: str, new: str, confirm_new: str) -> object:
+    def change_password(self, old: str, new: str, confirm_new: str) -> None:
         """
         change password user
         :param old: old password
         :param new: new password
         :param confirm_new: confirm new password
-        :return: updated user object
         """
         old = self.build_pass(old)
         if old == self._User__password:
