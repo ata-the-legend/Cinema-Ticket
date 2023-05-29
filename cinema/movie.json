@@ -1,39 +1,30 @@
 {
-    "1": {
-        "movie_id": "1",
-        "name": "Zakhm kari 1",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1402"
-    },
-    "2": {
-        "movie_id": "2",
+    "7": {
+        "movie_id": "3",
         "name": "Zakhm kari 3",
         "director": "hasan fathi",
         "description": "description",
         "duration_time": "2:00",
         "age_limit": "18",
-        "product_year": "1402"
+        "product_year": "1432"
     },
-    "3": {
-        "movie_id": "3",
-        "name": "Zakhm kari 2",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1402"
+    "2": {
+        "movie_id": "2",
+        "name": "post shir",
+        "director": "masih",
+        "description": "description...........",
+        "duration_time": "3.30",
+        "age_limit": "15",
+        "product_year": "1401"
     },
     "4": {
         "movie_id": "4",
-        "name": "Zakhm kari 1",
+        "name": "Zakhm kari 3",
         "director": "hasan fathi",
         "description": "description",
         "duration_time": "2:00",
         "age_limit": "18",
-        "product_year": "1402"
+        "product_year": "1432"
     },
     "5": {
         "movie_id": "5",
@@ -42,25 +33,7 @@
         "description": "description",
         "duration_time": "2:00",
         "age_limit": "18",
-        "product_year": "1402"
-    },
-    "6": {
-        "movie_id": "6",
-        "name": "Zakhm kari 2",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1402"
-    },
-    "7": {
-        "movie_id": "7",
-        "name": "Zakhm kari 1",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1402"
+        "product_year": "1432"
     },
     "8": {
         "movie_id": "8",
@@ -69,33 +42,6 @@
         "description": "description",
         "duration_time": "2:00",
         "age_limit": "18",
-        "product_year": "1402"
-    },
-    "9": {
-        "movie_id": "9",
-        "name": "Zakhm kari 2",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1402"
-    },
-    "10": {
-        "movie_id": "10",
-        "name": "Zakhm kari 1",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1402"
-    },
-    "11": {
-        "movie_id": "11",
-        "name": "Zakhm kari 3",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1402"
+        "product_year": "1432"
     }
 }

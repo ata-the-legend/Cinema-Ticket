@@ -2,6 +2,7 @@
 import uuid
 from extra import save_movie, get_movie_object, delete_movie, get_movie_database
 
+
 class Movie:
     def __init__(self, movie_id, name:str, director:str, duration_time:str, product_year,
                  age_limit, description:str = None):
@@ -22,67 +23,65 @@ class Movie:
     @classmethod
     def edit_movie(cls, movie_id, new_name,  new_director, new_duration_time, new_product_year,
                    new_age_limit, new_description):
-        movie = get_movie_object(movie_id)
         delete_movie(movie_id)
         movie = cls(movie_id, new_name,  new_director, new_duration_time, new_product_year,
-                   new_age_limit, new_description)
+                    new_age_limit, new_description)
         save_movie(vars(movie))
 
+    @staticmethod
+    def delete_movie(movie_id:str):
+        delete_movie(movie_id)
+
+    @staticmethod
+    def generate_id():
+        dicti = get_movie_database()
+        try:
+            last_id = int(max(list(dicti.keys())))
+            last_id += 1
+        except:
+            last_id = 1
+        return str(last_id)
+
+
+class Cinema:
+    def __init__(self, name, location, working_hours, cinema_id):
+        self.name = name
+        self.location = location
+        self.working_hours = working_hours
+        self.cinema_id = cinema_id
+
+
     @classmethod
-    def delete_movie(cls, movie_id):
-        # delete(movie_id)
+    def cinema_add(cls, name, location, working_hours):
+        cinema_id = cls.generate_id()
+        cinema = cls(name, location, working_hours, cinema_id)
+        save(vars(cinema))
+
+    @classmethod
+    def cinema_edit(cls,cinema_id, new_name, new_location, new_working_hours):
+        # cinema = get_object(cinema_id)
+        # delete(cinema)
+        cinema = cls(new_name, new_location, new_working_hours,cinema_id)
+
+
+    @classmethod
+    def cinema_delete(cls, cinema_id):
+        #delete(cinema_id)
         pass
 
     @staticmethod
     def generate_id():
         dicti = get_movie_database()
         try:
-            last_id = int(list(dicti.keys())[-1])
+            last_id = int(max(list(dicti.keys())))
             last_id += 1
         except:
             last_id = 1
         return str(last_id)
 
-Movie.add_movie('Zakhm kari 2','hasan fathi', '2:00', '1402', '18','description')
-Movie.add_movie('Zakhm kari 1','hasan fathi', '2:00', '1402', '18','description')
-Movie.add_movie('Zakhm kari 3','hasan fathi', '2:00', '1402', '18','description')
 
-# class Cinema:
-#     def __init__(self, name, location, working_hours, cinema_id):
-#         self.name = name
-#         self.location = location
-#         self.working_hours = working_hours
-#         self.cinema_id = cinema_id
-#
-#
-#     @classmethod
-#     def cinema_add(cls, name, location, working_hours):
-#         cinema_id = cls.generate_id()
-#         cinema = cls(name, location, working_hours, cinema_id)
-#        #save(vars(cinema))
-#
-#     @classmethod
-#     def cinema_edit(cls,cinema_id, new_name, new_location, new_working_hours):
-#         # cinema = get_object(cinema_id)
-#         # delete(cinema)
-#         cinema = cls(new_name, new_location, new_working_hours,cinema_id)
-#
-#
-#     @classmethod
-#     def cinema_delete(cls, cinema_id):
-#         #delete(cinema_id)
-#         pass
-#
-#
-#
-#     # def generate_id(self):
-#     #     dict = get_database()
-#     #     last_id = list(dict.key)[-1]
-#     #     id_counter += 1
-#     #     return str(id_counter)
-#
-#
-#
+
+
 # class Salon:
 #     def __init__(self, name, seats_no,cinema_id, salon_id):
 #         self.name =name
