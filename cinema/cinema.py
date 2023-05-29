@@ -33,3 +33,11 @@ class Season:
         ...
 
 
+class ticket:
+
+    __cinema_account = 0
+    @staticmethod
+    def change_cinema_account(serial_number: str) -> None:
+        ticket.__cinema_account = serial_number
+
+    
