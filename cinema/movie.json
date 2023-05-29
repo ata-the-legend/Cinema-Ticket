@@ -1,47 +1,20 @@
 {
-    "7": {
-        "movie_id": "3",
-        "name": "Zakhm kari 3",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1432"
+    "1": {
+        "movie_id": "1",
+        "name": "lion skin",
+        "director": "hasan",
+        "description": "description....",
+        "duration_time": "2:50",
+        "age_limit": "16",
+        "product_year": "1401"
     },
     "2": {
         "movie_id": "2",
-        "name": "post shir",
-        "director": "masih",
-        "description": "description...........",
-        "duration_time": "3.30",
-        "age_limit": "15",
-        "product_year": "1401"
-    },
-    "4": {
-        "movie_id": "4",
-        "name": "Zakhm kari 3",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1432"
-    },
-    "5": {
-        "movie_id": "5",
-        "name": "Zakhm kari 3",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1432"
-    },
-    "8": {
-        "movie_id": "8",
-        "name": "Zakhm kari 3",
-        "director": "hasan fathi",
-        "description": "description",
-        "duration_time": "2:00",
-        "age_limit": "18",
-        "product_year": "1432"
+        "name": "star wars",
+        "director": "babllll",
+        "description": "description....",
+        "duration_time": "3:00",
+        "age_limit": "12",
+        "product_year": "2007"
     }
 }

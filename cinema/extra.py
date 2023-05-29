@@ -151,10 +151,10 @@ def get_session_database() -> dict:
         print('You have error in get cinema-database', ex)
 
 
-def save_session(season: dict) -> None:
+def save_session(session: dict) -> None:
     dic = get_session_database()
-    season_id = season['season_id']
-    dic.update({season_id: season})
+    session_id = session['session_id']
+    dic.update({session_id: session})
     try:
         with open("session.json", "w") as fp:
             json.dump(dic, fp, indent=4)  # encode dict into JSON
@@ -179,5 +179,49 @@ def get_session_object(session_id: str) -> dict | None:
             season_dict = json.load(fp)
             season = season_dict[session_id]
             return season
+    except Exception:
+        return None
+
+
+#-----------------------------------------Ticket------------------------------------------
+
+
+def get_ticket_database() -> dict:
+    try:
+        with open("ticket.json", "r") as fp:
+            # Load the dictionary from the file
+            return json.load(fp)
+    except Exception as ex:
+        print('You have error in get cinema-database', ex)
+
+
+def save_ticket(ticket: dict) -> None:
+    dic = get_ticket_database()
+    ticket_id = ticket['ticket_id']
+    dic.update({ticket_id: ticket})
+    try:
+        with open("ticket.json", "w") as fp:
+            json.dump(dic, fp, indent=4)  # encode dict into JSON
+    except Exception as ex:
+        print('You have error', ex)
+
+
+def delete_ticket(ticket_id: str) -> None:
+    dic = get_ticket_database()
+    del dic[ticket_id]
+    try:
+        with open("ticket.json", "w") as fp:
+            json.dump(dic, fp, indent=4)  # encode dict into JSON
+    except Exception as ex:
+        print('You have error', ex)
+
+
+def get_ticket_object(ticket_id: str) -> dict | None:
+    try:
+        with open("ticket.json", "r") as fp:
+            # Load the dictionary from the file
+            ticket_dict = json.load(fp)
+            ticket = ticket_dict[ticket_id]
+            return ticket
     except Exception:
         return None
