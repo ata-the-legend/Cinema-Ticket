@@ -1,10 +1,10 @@
 #! /usr/bin/python3
 
 import click
-from user import User ,UserRole
-from extra import get_object, delete, save
-from ..bank_account.bank_account import BankAccount
-from ..cinema.cinema import ticket
+from user.user import User ,UserRole
+from user.extra import get_object, delete, save
+from bank_account.bank_account import BankAccount
+from cinema.cinema import Ticket
 
 @click.group
 def mycommands():
@@ -30,7 +30,7 @@ def cinema_bank_account(account_number: str) -> None:
     Bank account number for depositing the cinema income.
     '''
     if BankAccount.is_serial(account_number):
-        ticket.change_cinema_account(account_number)
+        Ticket.change_cinema_account(account_number)
     else:
         click.echo('Entered serial number is incorrect.')
 
