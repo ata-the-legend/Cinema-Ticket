@@ -1,5 +1,5 @@
 from uuid import uuid4
-
+from extra import save, get_database, get_object, delete
 
 class BankAccount:
     accounts_dict = {}
@@ -157,3 +157,18 @@ Balance       >>>   {balance:,}"
 
         self.sub(amount + self.BANK_TRANSFER_FEE)
         other.add(amount)
+
+    @staticmethod
+    def is_serial(serial_number: str) -> bool:
+        """
+        Check if serial number is valid and exist.
+
+        Args:
+            serial_number (str): A bank account serial number
+
+        Returns:
+            bool: True if serial is valid.
+        """
+        if get_object(serial_number):
+            return True
+        return False
