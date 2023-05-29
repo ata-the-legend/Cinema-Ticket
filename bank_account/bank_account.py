@@ -113,13 +113,13 @@ Balance       >>>   {balance:,}"
         Returns:
             int: update the account's balance with the int number
         """
-
+        
         if amount < 0:
             raise ValueError("Invalid Amount")
         self.__balance += amount
         return self.__balance
 
-    def sub(self, amount: int) -> int:
+    def sub(self, amount: int, password: str) -> int:
         """
         Subtracts a certain amount from the account's balance
 
@@ -135,6 +135,9 @@ Balance       >>>   {balance:,}"
             int: update the account's balance with the int number
         """
 
+        if password != self.__password:
+            raise ValueError("Incorrect Password")
+        
         if amount < 0:
             raise ValueError("Invalid Amount")
         self.__balance -= amount
@@ -142,7 +145,8 @@ Balance       >>>   {balance:,}"
             raise ValueError("Insufficient Inventory")
         return self.__balance
 
-    def transfer_to_another(self, other: "BankAccount", amount: int) -> None:
+    def transfer_to_another(self, other: "BankAccount", amount: int,
+                            password: str, cvv2: str) -> None:
         """
         Transfer a certain amount of money
         from first object to the second object that mentioned in Args
@@ -154,6 +158,10 @@ Balance       >>>   {balance:,}"
             amount (int): the amount of money that will transfer
             (excluding bank transfer fees)
         """
+        if cvv2 != self.cvv2:
+            raise ValueError("Incorrect CVV2")
 
-        self.sub(amount + self.BANK_TRANSFER_FEE)
+        self.sub((amount + self.BANK_TRANSFER_FEE), password)
         other.add(amount)
+
+
