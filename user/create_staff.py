@@ -2,8 +2,9 @@
 
 import click
 from user import User ,UserRole
-import pwinput
 from extra import get_object, delete, save
+from ..bank_account.bank_account import BankAccount
+from ..cinema.cinema import ticket
 
 @click.group
 def mycommands():
@@ -11,7 +12,7 @@ def mycommands():
 
 @click.command()
 @click.option('-u', '--username', prompt='Username', help='Define a username for new staff.')
-@click.option('-p', '--password', prompt=('Password'), hide_input=True, help='Define a password for new staff.')
+@click.option('-p', '--password', prompt='Password', hide_input=True, help='Define a password for new staff.')
 @click.option('-b', '--birthdate', prompt='Birthdate', help='Birthdate of the new staff.')
 @click.option('-P', '--phone-number', help='Enter phone number of new staff.(optional)')
 def signup(username: str, password: str, birthdate: str, phone_number: str) -> None:
@@ -28,9 +29,10 @@ def cinema_bank_account(account_number: str) -> None:
     '''
     Bank account number for depositing the cinema income.
     '''
-    #check the number -> not ok? raise error
-    #add a method in cinema module to take this
-    pass
+    if BankAccount.is_serial(account_number):
+        ticket.change_cinema_account(account_number)
+    else:
+        click.echo('Entered serial number is incorrect.')
 
 ACCESS = {
     'D': 'Delete',
