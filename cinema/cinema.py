@@ -2,9 +2,11 @@ from extra import save_movie, get_movie_object, delete_movie, get_movie_database
     save_cinema, get_cinema_database,get_cinema_object,delete_cinema,\
     save_salon, get_salon_database,get_salon_object, delete_salon,\
     save_session, get_session_database, get_session_object, delete_session, \
-    save_ticket, get_ticket_database, get_ticket_object, delete_ticket
+    save_ticket, get_ticket_database, get_ticket_object, delete_ticket, \
+    save_user_subscription, get_user_subscription_database, delete_user_subscription, get_user_subscription_object
 from bank_account.bank_account import BankAccount
 from user.extra import get_object
+from datetime import datetime, timedelta
 
 
 class Movie:
@@ -229,6 +231,8 @@ class Session:
         return str(last_id)
 
 Session.show_which_session('1', '1', '1')
+
+
 class Ticket:
     def __init__(self, ticket_id, session_id, username_owner):
         self.ticket_id = ticket_id
@@ -236,22 +240,63 @@ class Ticket:
         self.username_owner = username_owner
 
     @staticmethod
-    def show_ticket(owner_username, session_id):
+    def is_birthday(birthdate):
+        today = datetime.today()
+        birthdate = datetime.strptime(birthdate, "%Y-%m-%d")
+        if today.month == birthdate.month and today.day == birthdate.day:
+            return True
+        else:
+            return False
 
-        
+    @staticmethod
+    def calculate_discount(subscription, transaction_count=0, subscription_month=None):
+        if subscription == "bronze":
+            return 0
+        elif subscription == "silver":
+            if transaction_count <= 3:
+                return 0.2
+            else:
+                return 0
+        elif subscription == "gold":
+            if datetime.now().month <= subscription_month:
+                return 0.5
+            else:
+                return 0
+
     @classmethod
-    def buy_ticket(cls, owner_username, session_id):
+    def show_ticket(cls, owner_username, session_id):
         session = get_session_object(session_id)
         if int(session['capacity']) >= 1:
             user = get_object(owner_username)
-            if user['cinema_debit_card'] >= int(session['price']):
-                ticket_id = cls.generate_id()
-                ticket = cls(ticket_id, session_id, owner_username)
-                save_ticket(vars(ticket))
+            price = int(session['price'])
+            discount = 0
+            if cls.is_birthday(int(user['birthdate'])):
+                discount += 0.5
+            discount += cls.calculate_discount(price, user['debit_card_type'])
+            final_price = price * (1-discount)
+            if user['cinema_debit_card'] >= final_price:
+                movie_name = get_movie_object(session['movie_id'])['name']
+                cinema_name = get_cinema_object(session['cinema_id'])['name']
+                salon_name = get_salon_object(session['salon_id'])['name']
+                session_time = session['start_time'] + ' to ' + session['end_time']
+                session_datetime = session['datetime']
+                final_price = final_price
+                print(f'====================== Your Ticket ========================'
+                      f'movie  : {movie_name}'
+                      f'cinema : {cinema_name}'
+                      f'salon  : {salon_name}'
+                      f'date   : {session_datetime}   |   time : {session_time}'
+                      f'final price : {final_price}')
             else:
                 print('Your wallet balance is Not enough')
         else:
             print("this session doesn't have capacity")
+
+    @classmethod
+    def buy_ticket(cls, owner_username, session_id):
+        ticket_id = cls.generate_id()
+        ticket = cls(ticket_id, session_id, owner_username)
+        save_ticket(vars(ticket))
 
     @staticmethod
     def generate_id():
@@ -263,3 +308,21 @@ class Ticket:
             last_id = 1
         return str(last_id)
 
+
+class Subscription:
+    def __init__(self, level, owner_username, expire_date=None, transition_count=None):
+        self.level = level
+        self.owner_username = owner_username
+        self.expire_date = expire_date
+        self.transition_count = transition_count
+
+    @classmethod
+    def buy_subscription(cls, choices_subscription, owner_username, serial_bank_account, password, cvv2):
+        match choices_subscription:
+            case 'gold':
+                purchase_date = datetime.today()
+                expire_date = purchase_date + timedelta(days=30)
+                subscription = cls(choices_subscription, owner_username, expire_date)
+                #save()
+            case 'silver':
+                ...

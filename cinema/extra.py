@@ -225,3 +225,48 @@ def get_ticket_object(ticket_id: str) -> dict | None:
             return ticket
     except Exception:
         return None
+
+
+
+#-----------------------------------------sub------------------------------------------
+
+def get_user_subscription_database() -> dict:
+    try:
+        with open("user_subscription.json", "r") as fp:
+            # Load the dictionary from the file
+            return json.load(fp)
+    except Exception as ex:
+        print('You have error in get cinema-database', ex)
+
+
+def save_user_subscription(user_subscription: dict) -> None:
+    dic = get_user_subscription_database()
+    owner_username = user_subscription['owner_username']
+    dic.update({owner_username: user_subscription})
+    try:
+        with open("user_subscription.json", "w") as fp:
+            json.dump(dic, fp, indent=4)  # encode dict into JSON
+    except Exception as ex:
+        print('You have error', ex)
+
+
+def delete_user_subscription(owner_username: str) -> None:
+    dic = get_user_subscription_database()
+    del dic[owner_username]
+    try:
+        with open("user_subscription.json", "w") as fp:
+            json.dump(dic, fp, indent=4)  # encode dict into JSON
+    except Exception as ex:
+        print('You have error', ex)
+
+
+def get_user_subscription_object(owner_username: str) -> dict | None:
+    try:
+        with open("user_subscription.json", "r") as fp:
+            # Load the dictionary from the file
+            user_subscription_dict = json.load(fp)
+            user_subscription = user_subscription_dict[owner_username]
+            return user_subscription
+    except Exception:
+        return None
+
