@@ -2,17 +2,17 @@ from uuid import uuid4
 from extra import save, get_database, get_object, delete
 
 class BankAccount:
-    accounts_dict = {}
+
     BANK_TRANSFER_FEE = 1_000
 
-    def __init__(self, owner_name: str, bank: str, balance: int):
+    def __init__(self, owner_name: str, bank: str, balance: int, serial_number, cvv2, password):
         self.owner_name = owner_name
         self.bank = bank
-        self.serial_number = self.serial_number_creator()
-        self.cvv2 = self.cvv2_creator()
-        self.__password = self.password_creator()
+        self.serial_number = serial_number 
+        self.cvv2 = cvv2 
+        self.__password = password 
         self.__balance = balance
-        self.accounts_dict[self.serial_number] = vars(self)
+
 
     @staticmethod
     def serial_number_creator() -> str:
@@ -68,10 +68,21 @@ class BankAccount:
             create a BankAccount instance 
             and return its serial number as string
         """
-        usr = cls(input_owner_name, input_bank, input_balance)
-        
-        return usr.serial_number
+        serial_number = cls.serial_number_creator()
+        cvv2 = cls.cvv2_creator()
+        password = cls.password_creator()
+        user = cls(input_owner_name, input_bank, input_balance, serial_number, cvv2, password)
+        save(vars(user))
+        return user
         #this serial number should save in user_accounts!!!
+
+    def __str__(self) -> str:
+        return f"\"{self.bank}\" bank information:\n\
+Owner Name    >>>   {self.owner_name}\n\
+Serial Number >>>   {self.serial_number}\n\
+CVV2          >>>   {self.cvv2}\n\
+Password      >>>   {self.__password}\n\
+Balance       >>>   {self.__balance:,}"
 
     @classmethod
     def show_account(cls, serial_number: str) -> str:
@@ -84,21 +95,22 @@ class BankAccount:
         Returns:
             str: show all information with an f"string"
         """
+        user_dict = get_object(serial_number)
+        user = cls(user_dict["owner_name"], user_dict["bank"], user_dict["_BankAccount__balance"], user_dict["serial_number"], user_dict["cvv2"], user_dict["_BankAccount__password"])
+        return user
+    
+#         owner_name = user["owner_name"]
+#         bank = user["bank"]
+#         cvv2 = user["cvv2"]
+#         password = user["_BankAccount__password"]
+#         balance = user["_BankAccount__balance"]
 
-        info = cls.accounts_dict[serial_number]
-        owner_name = info["owner_name"]
-        bank = info["bank"]
-        serial_number = info["serial_number"]
-        cvv2 = info["cvv2"]
-        password = info["_BankAccount__password"]
-        balance = info["_BankAccount__balance"]
-
-        return f"\"{bank}\" bank information:\n\
-Owner Name    >>>   {owner_name}\n\
-Serial Number >>>   {serial_number}\n\
-CVV2          >>>   {cvv2}\n\
-Password      >>>   {password}\n\
-Balance       >>>   {balance:,}"
+#         return f"\"{bank}\" bank information:\n\
+# Owner Name    >>>   {owner_name}\n\
+# Serial Number >>>   {serial_number}\n\
+# CVV2          >>>   {cvv2}\n\
+# Password      >>>   {password}\n\
+# Balance       >>>   {balance:,}"
 
     def add(self, amount: int) -> int:
         """
@@ -117,6 +129,8 @@ Balance       >>>   {balance:,}"
         if amount < 0:
             raise ValueError("Invalid Amount")
         self.__balance += amount
+        delete(self.serial_number)
+        save(vars(self))
         return self.__balance
 
     def sub(self, amount: int, password: str) -> int:
@@ -140,9 +154,12 @@ Balance       >>>   {balance:,}"
         
         if amount < 0:
             raise ValueError("Invalid Amount")
-        self.__balance -= amount
-        if self.__balance < 0 :
+        new_balance = self.__balance - amount
+        if new_balance < 0 :
             raise ValueError("Insufficient Inventory")
+        self.__balance = new_balance
+        delete(self.serial_number)
+        save(vars(self))
         return self.__balance
 
     def transfer_to_another(self, other: "BankAccount", amount: int,
@@ -160,6 +177,8 @@ Balance       >>>   {balance:,}"
         """
         if cvv2 != self.cvv2:
             raise ValueError("Incorrect CVV2")
+        if amount < 0:
+            raise ValueError("Invalid Amount")
 
         self.sub((amount + self.BANK_TRANSFER_FEE), password)
         other.add(amount)
