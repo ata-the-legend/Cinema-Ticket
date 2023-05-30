@@ -209,7 +209,7 @@ class User:
                f'Phone_number = {phone_number}\n' \
                f'Birthdate = {self.birthdate}\n' \
                f'Sign up Date = {self.signup_datetime}\n' \
-               f'User Level = {UserRole(self.user_role).name}'
+               f'User Access Level = {UserRole(self.user_role).name}'
 
     def save_bank_account(self, serial_number) -> None:
         """
