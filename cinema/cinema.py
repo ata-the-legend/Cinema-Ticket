@@ -32,4 +32,3 @@ class Season:
     def reserve_season(self):
         ...
 
-
