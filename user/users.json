@@ -1,14 +1,4 @@
 {
-    "ramin": {
-        "id": "22941464-dfc1-402d-a7eb-1ee3edf1e96d",
-        "username": "ramin",
-        "phone_number": null,
-        "_User__password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
-        "signup_datetime": "2023-05-24 15:55:17.128991",
-        "cinema_debit_card": 0,
-        "bank_accounts": [],
-        "debit_card_type": 1
-    },
     "saba": {
         "user_id": "002ff597-2852-421a-bfed-85841caaca76",
         "username": "saba",

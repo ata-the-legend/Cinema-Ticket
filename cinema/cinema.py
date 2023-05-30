@@ -4,6 +4,7 @@ from extra import save_movie, get_movie_object, delete_movie, get_movie_database
     save_session, get_session_database, get_session_object, delete_session, \
     save_ticket, get_ticket_database, get_ticket_object, delete_ticket
 from bank_account.bank_account import BankAccount
+from user.extra import get_object
 
 
 class Movie:
@@ -156,7 +157,7 @@ class Salon:
         for session in sessions:
             if session['movie_id'] == movie_id and session['cinema_id'] == cinema_id:
                 salon = get_salon_object(session['salon_id'])
-                print(f"{salon['salon_id']} - {salon['name']} - capacity status : {session['capacity']} empty seats")
+                print(f"({salon['salon_id']}) - {salon['name']}")
             else:
                 print('not found salon for this movie')
 
@@ -164,7 +165,7 @@ class Salon:
     def generate_id():
         dicti = get_salon_database()
         try:
-            last_id = max(list(map(int,list(dicti.keys()))))
+            last_id = max(list(map(int, list(dicti.keys()))))
             last_id += 1
         except :
             last_id = 1
@@ -203,27 +204,54 @@ class Session:
         delete_session(session_id)
 
     @staticmethod
+    def show_which_session(movie_id, cinema_id, salon_id):
+        sessions = list(get_session_database().values())
+        for session in sessions:
+            if session['movie_id'] == movie_id and\
+               session['cinema_id'] == cinema_id and\
+               session['salon_id'] == salon_id:
+
+                session = get_session_object(session['session_id'])
+                print(f"({session['salon_id']}) - |{session['start_time']} to {session['end_time']} \n      "
+                      f"|capacity status : {session['capacity']} empty seats\n      "
+                      f"|price : {session['price']}")
+            else:
+                print('not found session for this movie')
+
+    @staticmethod
     def generate_id():
         dicti = get_session_database()
         try:
-            last_id = max(list(map(int,list(dicti.keys()))))
+            last_id = max(list(map(int, list(dicti.keys()))))
             last_id += 1
         except:
             last_id = 1
         return str(last_id)
 
-
+Session.show_which_session('1', '1', '1')
 class Ticket:
     def __init__(self, ticket_id, session_id, username_owner):
         self.ticket_id = ticket_id
         self.session_id = session_id
         self.username_owner = username_owner
 
+    @staticmethod
+    def show_ticket(owner_username, session_id):
+
+        
     @classmethod
-    def buy_ticket(cls, username_owner, session_id):
-        ticket_id = cls.generate_id()
-        ticket = cls(ticket_id, session_id, username_owner)
-        save_ticket(vars(ticket))
+    def buy_ticket(cls, owner_username, session_id):
+        session = get_session_object(session_id)
+        if int(session['capacity']) >= 1:
+            user = get_object(owner_username)
+            if user['cinema_debit_card'] >= int(session['price']):
+                ticket_id = cls.generate_id()
+                ticket = cls(ticket_id, session_id, owner_username)
+                save_ticket(vars(ticket))
+            else:
+                print('Your wallet balance is Not enough')
+        else:
+            print("this session doesn't have capacity")
 
     @staticmethod
     def generate_id():
