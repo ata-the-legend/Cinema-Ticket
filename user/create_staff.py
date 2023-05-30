@@ -1,10 +1,10 @@
 #! /usr/bin/python3
 
 import click
-from user.user import User ,UserRole
-from user.extra import get_object, delete, save
-from bank_account.bank_account import BankAccount
-from cinema.cinema import Ticket
+from user import User ,UserRole
+from extra import get_object, delete, save
+# from bank_account.bank_account import BankAccount
+# from cinema.cinema import Ticket
 
 @click.group
 def mycommands():
@@ -23,16 +23,16 @@ def signup(username: str, password: str, birthdate: str, phone_number: str) -> N
     User.create_user(username, password, birthdate, phone_number).promote_to_staff()
 
 
-@click.command()
-@click.argument('account_number')
-def cinema_bank_account(account_number: str) -> None:
-    '''
-    Bank account number for depositing the cinema income.
-    '''
-    if BankAccount.is_serial(account_number):
-        Ticket.change_cinema_account(account_number)
-    else:
-        click.echo('Entered serial number is incorrect.')
+# @click.command()
+# @click.argument('account_number')
+# def cinema_bank_account(account_number: str) -> None:
+#     '''
+#     Bank account number for depositing the cinema income.
+#     '''
+#     if BankAccount.is_serial(account_number):
+#         Ticket.change_cinema_account(account_number)
+#     else:
+#         click.echo('Entered serial number is incorrect.')
 
 ACCESS = {
     'D': 'Delete',
@@ -66,7 +66,7 @@ def edit_user_access(username: str, access: str):
 
 
 mycommands.add_command(signup)
-mycommands.add_command(cinema_bank_account)
+# mycommands.add_command(cinema_bank_account)
 mycommands.add_command(edit_user_access)
 
 if __name__ == '__main__':

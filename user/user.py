@@ -1,9 +1,9 @@
 import uuid, hashlib
-from .extra import save, get_object, delete
+from extra import save, get_object, delete
 from datetime import datetime
 from enum import Enum
 import time
-from .custom_exception import PasswordError, UsernameError, RegisterError, LoginError
+from custom_exception import PasswordError, UsernameError, RegisterError, LoginError
 
 
 class DebitCardType(Enum):
