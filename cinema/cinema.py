@@ -41,11 +41,8 @@ class Movie:
 
     @staticmethod
     def show_movie():
-        for id, movies in get_movie_database().items() :
+        for id, movies in get_movie_database().items():
             print(f'({id}) - {movies["name"]}')
-
-
-
 
     @staticmethod
     def generate_id():
@@ -59,6 +56,7 @@ class Movie:
 
 # Movie.add_movie("star wars", 'babllll', '3:00', '2007', '12', 'description....')
 # Movie.show_movie()
+
 
 class Cinema:
     def __init__(self,cinema_id, name, location, working_hours):
@@ -77,9 +75,7 @@ class Cinema:
                 cinema = get_cinema_object(session['cinema_id'])
                 print(f"{cinema['cinema_id']} - {cinema['name']}")
             else:
-                print('not found ')
-
-
+                print('not found cinema for this movie')
 
     @staticmethod
     def change_cinema_account(serial_number: str) -> None:
@@ -129,6 +125,7 @@ class Cinema:
             last_id = 1
         return str(last_id)
 
+
 class Salon:
     def __init__(self, salon_id, name, seats_no, cinema_id):
         self.name = name
@@ -151,6 +148,17 @@ class Salon:
     @staticmethod
     def delete_salon(salon_id):
         delete_salon(salon_id)
+
+    @staticmethod
+    def show_which_salon(movie_id, cinema_id):
+        sessions = list(get_session_database().values())
+
+        for session in sessions:
+            if session['movie_id'] == movie_id and session['cinema_id'] == cinema_id:
+                salon = get_salon_object(session['salon_id'])
+                print(f"{salon['salon_id']} - {salon['name']} - capacity status : {session['capacity']} empty seats")
+            else:
+                print('not found salon for this movie')
 
     @staticmethod
     def generate_id():
