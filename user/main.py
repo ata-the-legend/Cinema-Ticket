@@ -74,7 +74,65 @@ def edit_pass(user):
         return False
     
 def bank_operation(serial: str):
-    pass
+    user_account = BankAccount.show_account(serial)
+    while True:
+        clear_screen()
+        operation_order = input(f'\nSelect your operation:'
+                                f'\n\n'
+                                f'Deposit ------------> enter number (1)\n' #variz
+                                f'Withdraw -----------> enter number (2)\n'
+                                f'Transfer -----------> enter number (3)\n'
+                                f'Cancel -------------> enter number (0)\n'
+                                f'\nPlease insert your choice : ')
+        match operation_order:
+            case '0':
+                break
+
+            case '1':
+                clear_screen()
+                try:
+                    amount = int(input('Amount: '))
+                    inventory = user_account.add(amount)
+                except ValueError as e:
+                    print(str(e))
+                    print("Operation was unsuccessful!")
+                    sleep(3)
+                else:
+                    print("Operation was successful!")
+                    print(f'Inventory: {inventory}')
+                    input('Back to operations menu:(Y) ')
+
+            case '2':
+                clear_screen()
+                try:
+                    amount = int(input('Amount: '))
+                    password = pwinput(prompt='Password for this account: ', mask='*')
+                    inventory = user_account.sub(amount, password)
+                except ValueError as e:
+                    print(str(e))
+                    print("Operation was unsuccessful!")
+                    sleep(3)
+                else:
+                    print("Operation was successful!")
+                    print(f'Inventory: {inventory}')
+                    input('Back to operations menu:(Y) ')
+
+            case '3':
+                pass
+    # create account --> serial , pass
+        #input --bank name(menu) --balance
+        #save in user accounts
+    # show account --> for user.accounts print(show account
+    # bank oprations
+        #input --serial
+        #useraccount --> show account
+        # add
+            #inp --int(ammount
+        # sub
+            #input --int(amount --pass
+        # tranfer
+            #input --other account --int(amount) --pass --cvv2 
+            #userother --> show account
 
 def bank(user: User):
     while True:
@@ -149,20 +207,6 @@ def bank(user: User):
             case _:
                 print('invalid choice!')
  
-    # create account --> serial , pass
-        #input --bank name(menu) --balance
-        #save in user accounts
-    # show account --> for user.accounts print(show account
-    # bank oprations
-        #input --serial
-        #useraccount --> show account
-        # add
-            #inp --int(ammount
-        # sub
-            #input --int(amount --pass
-        # tranfer
-            #input --other account --int(amount) --pass --cvv2 
-            #userother --> show account
 
 
 def main():
