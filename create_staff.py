@@ -1,8 +1,8 @@
 #! /usr/bin/python3
 
 import click
-from user import User ,UserRole
-from user_extra import get_object, delete, save
+from user.user import User ,UserRole
+from user.user_extra import get_object, delete, save
 # from bank_account.bank_account import BankAccount
 # from cinema.cinema import Ticket
 
