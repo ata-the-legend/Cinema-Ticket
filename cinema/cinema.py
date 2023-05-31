@@ -60,6 +60,7 @@ class Movie:
 
 
 class Cinema:
+    cinema_bank_account =
     def __init__(self,cinema_id, name, location, working_hours):
         self.name = name
         self.location = location
@@ -84,10 +85,21 @@ class Cinema:
         else:
             print('your age is lower than age limit . you dont take this movie')
 
-    @staticmethod
-    def charge_debit_card(username, serial, password, cvv2):
-        pass
-
+    @classmethod
+    def charge_debit_card(cls,username:str, amount:str, serial_number:str, password:str, cvv2:str):
+        bank_account = get_bank_account(serial_number)
+        if bank_account['password'] == password and bank_account['cvv2'] == cvv2:
+            BankAccount.transfer_to_another(cls.cinema_bank_account, serial_number, password, cvv2)
+            user = get_object(username)
+            debit = user['cinema_debit_card']
+            new_inventory = debit + int(amount)
+            delete(username)
+            obj = User(user['username'], user['_User__password'], user['birthdate'],
+                       user['user_id'], user['signup_datetime'], UserRole(user['user_role']),
+                       new_inventory, user['phone_number'])
+            save(vars(obj))
+        else:
+            raise 'your password or cvv2 incorrect'
 
     @classmethod
     def cinema_add(cls, name, location, working_hours):
@@ -342,10 +354,6 @@ class Ticket:
             last_id = 1
         return str(last_id)
 
-
-Ticket.buy_ticket('pouriya', '2')
-# Ticket.show_ticket('saba', '2')
-# Ticket.apply_discount('saba')
 
 class Subscription:
     def __init__(self, level, owner_username, expire_date=None, transition_count=None):
