@@ -11,7 +11,6 @@ class TestBankAccount(unittest.TestCase):
         self.assertEqual(len(account.serial_number), 19)
         self.assertIsInstance(account.cvv2, str)
         self.assertEqual(len(account.cvv2), 3)
-        # self.assertGreaterEqual(account._BankAccount__password, 0)
         self.assertIsInstance(account._BankAccount__password, str)
         self.assertEqual(len(account._BankAccount__password), 4)
         self.assertEqual(account._BankAccount__balance, 500_000_000)
