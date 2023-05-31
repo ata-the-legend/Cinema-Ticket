@@ -1,11 +1,11 @@
-from extra import save_movie, get_movie_object, delete_movie, get_movie_database,\
+from cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_database,\
     save_cinema, get_cinema_database,get_cinema_object,delete_cinema,\
     save_salon, get_salon_database,get_salon_object, delete_salon,\
     save_session, get_session_database, get_session_object, delete_session, \
     save_ticket, get_ticket_database, get_ticket_object, delete_ticket, \
     save_user_subscription, get_user_subscription_database, delete_user_subscription, get_user_subscription_object
 from bank_account.bank_account import BankAccount
-from user.extra import get_object
+from user.user_extra import get_object
 from datetime import datetime, timedelta
 
 
@@ -247,30 +247,52 @@ class Ticket:
             return False
 
     @staticmethod
-    def calculate_discount(subscription, transaction_count=0, subscription_month=None):
-        if subscription == "bronze":
+    def subscription_discount(owner_username):
+        subscription = get_user_subscription_object(owner_username)
+        level = subscription['level']
+        transaction_count = subscription['transition_count']
+        expire_date = datetime.strptime(subscription['expire_date'], "%Y-%m-%d")
+
+        if level == "bronze":
             return 0
-        elif subscription == "silver":
+        elif level == "silver":
             if transaction_count <= 3:
+                delete_user_subscription(owner_username)
+                expire_date = None
+                transaction_count += 1
+                obj = Subscription('silver', owner_username, expire_date, transaction_count)
+                save_user_subscription(vars(obj))
                 return 0.2
             else:
+                delete_user_subscription(owner_username)
+                obj = Subscription('bronze', owner_username)
+                save_user_subscription(vars(obj))
                 return 0
-        elif subscription == "gold":
-            if datetime.now().month <= subscription_month:
+        elif level == "gold":
+            if datetime.today() <= expire_date:
                 return 0.5
             else:
+                delete_user_subscription(owner_username)
+                obj = Subscription('bronze', owner_username)
+                save_user_subscription(vars(obj))
                 return 0
+
+    @classmethod
+    def apply_discount(cls, owner_username):
+        user = get_object(owner_username)
+        discount = 0
+        if cls.is_birthday(user['birthdate']):
+            discount += 0.5
+        discount += cls.subscription_discount(owner_username)
+        return discount
 
     @classmethod
     def show_ticket(cls, owner_username, session_id):
         session = get_session_object(session_id)
         if int(session['capacity']) >= 1:
-            user = get_object(owner_username)
             price = int(session['price'])
-            discount = 0
-            if cls.is_birthday(user['birthdate']):
-                discount += 0.5
-            discount += cls.calculate_discount(price, user['debit_card_type'])
+            user = get_object(owner_username)
+            discount = cls.apply_discount(owner_username)
             final_price = price * (1-discount)
             if user['cinema_debit_card'] >= final_price:
                 movie_name = get_movie_object(session['movie_id'])['name']
@@ -279,12 +301,14 @@ class Ticket:
                 session_time = session['start_time'] + ' to ' + session['end_time']
                 session_datetime = session['datetime']
                 final_price = final_price
-                print(f'====================== Your Ticket ========================'
-                      f'movie  : {movie_name}'
-                      f'cinema : {cinema_name}'
-                      f'salon  : {salon_name}'
-                      f'date   : {session_datetime}   |   time : {session_time}'
-                      f'final price : {final_price}')
+                print(f' _________________________ Your Ticket __________________________\n'
+                      f'       movie  : {movie_name}\n'
+                      f'       cinema : {cinema_name}\n'  
+                      f'       salon  : {salon_name} \n'
+                      f'       date : {session_datetime}\n'
+                      f'       time : {session_time}\n'
+                      f'       final price : {final_price}\n'
+                      f' __________________________________________________________________')
             else:
                 print('Your wallet balance is Not enough')
         else:
@@ -308,8 +332,7 @@ class Ticket:
 
 
 Ticket.show_ticket('saba', '2')
-
-
+# Ticket.apply_discount('saba')
 
 class Subscription:
     def __init__(self, level, owner_username, expire_date=None, transition_count=None):
@@ -319,13 +342,23 @@ class Subscription:
         self.transition_count = transition_count
 
     @classmethod
-    def buy_subscription(cls, choices_subscription, owner_username, serial_bank_account, password, cvv2):
+    def buy_subscription(cls, choices_subscription, owner_username, serial_bank_account=None, password=None, cvv2=None):
         match choices_subscription:
             case 'gold':
+                # if bank transition is success :
                 purchase_date = datetime.today()
                 expire_date = purchase_date + timedelta(days=30)
-                subscription = cls(choices_subscription, owner_username, expire_date)
-                #save()
+                expire_date_str = datetime.strftime(expire_date, '%Y-%m-%d')
+                subscription = cls(choices_subscription, owner_username, expire_date, transition_count=None)
+                save_user_subscription(vars(subscription))
             case 'silver':
-                ...
-
+                # if bank transition is success :
+                transition_count = 3
+                expire_date = None
+                subscription = cls(choices_subscription, owner_username, expire_date, transition_count)
+                save_user_subscription(vars(subscription))
+            case 'bronze':
+                expire_date = None
+                transition_count = None
+                subscription = cls(choices_subscription, owner_username, expire_date, transition_count)
+                save_user_subscription(vars(subscription))
