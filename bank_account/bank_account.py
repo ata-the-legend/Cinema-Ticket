@@ -1,5 +1,5 @@
 from uuid import uuid4
-from bank_extra import save_bank_account,get_bank_database,delete_bank_account, get_bank_account_object
+from .bank_extra import save_bank_account,get_bank_database,delete_bank_account, get_bank_account_object
 
 class BankAccount:
 
