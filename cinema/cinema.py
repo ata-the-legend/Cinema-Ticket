@@ -310,6 +310,7 @@ class Ticket:
 Ticket.show_ticket('saba', '2')
 
 
+
 class Subscription:
     def __init__(self, level, owner_username, expire_date=None, transition_count=None):
         self.level = level
@@ -327,3 +328,4 @@ class Subscription:
                 #save()
             case 'silver':
                 ...
+
