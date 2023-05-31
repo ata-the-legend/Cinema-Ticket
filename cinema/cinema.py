@@ -7,7 +7,6 @@ from .cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_
 from bank_account.bank_extra import get_bank_account_object
 from bank_account.bank_account import BankAccount
 from user.user_extra import get_object, delete,save
-from user.user import User, UserRole
 from datetime import datetime, timedelta
 
 
@@ -334,11 +333,9 @@ class Ticket:
         inventory = user['cinema_debit_card']
         if inventory >= int(amount):
             new_inventory = inventory - int(amount)
+            user['cinema_debit_card'] = new_inventory
             delete(user['username'])
-            obj = User(user['username'], user['_User__password'], user['birthdate'],
-                       user['user_id'], user['signup_datetime'], UserRole(user['user_role']),
-                       new_inventory, user['phone_number'])
-            save(vars(obj))
+            save(user)
         else:
             raise 'balance not enough'
 

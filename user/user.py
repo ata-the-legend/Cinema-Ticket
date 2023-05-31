@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 import time
 from .custom_exception import PasswordError, UsernameError, RegisterError, LoginError
-
+from cinema.cinema import Subscription
 
 class UserRole(Enum):
     PUBLIC = 0
@@ -32,11 +32,10 @@ class User:
         self.cinema_debit_card = cinema_debit_card
         self.bank_accounts = bank_accounts
 
-    def show_bank_account(self):
-        ...
 
     @staticmethod
     def validate_phone_number(number):
+        pattern = '^\+989[\d]{9}|09[\d]{9}$'
         pattern = r"^(?:\+98|0)?9\d{9}$"
         return bool(regex.match(pattern, number))
 
@@ -117,6 +116,7 @@ class User:
             signup_datetime = str(datetime.now())
             user_role = UserRole.PUBLIC
             user = User(username, password, birthdate, user_id, signup_datetime, user_role, phone_number=phone_number)
+            Subscription.buy_subscription('bronze', username)
             save(vars(user))
             return user
 

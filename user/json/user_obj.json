@@ -9,5 +9,43 @@
         "user_role": 0,
         "cinema_debit_card": 199990000,
         "bank_accounts": []
+    },
+    "ata": {
+        "user_id": "3bb412d8-1874-4e51-8de2-1d5532bc7f45",
+        "username": "ata",
+        "phone_number": null,
+        "_User__password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+        "birthdate": "1234-5-8",
+        "signup_datetime": "2023-05-31 15:18:21.477284",
+        "user_role": 0,
+        "cinema_debit_card": 0,
+        "bank_accounts": [
+            "1367-3726-5615-0498",
+            "3262-3927-1694-3343"
+        ]
+    },
+    "amir": {
+        "user_id": "57887b3f-57b2-4e13-83ca-33e410c46172",
+        "username": "amir",
+        "phone_number": null,
+        "_User__password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+        "birthdate": "1234-8-7",
+        "signup_datetime": "2023-05-31 20:39:20.566040",
+        "user_role": 0,
+        "cinema_debit_card": 0,
+        "bank_accounts": []
+    },
+    "cinema": {
+        "user_id": "44e8c59b-6373-4f2d-a023-65051f3e0203",
+        "username": "cinema",
+        "phone_number": null,
+        "_User__password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+        "birthdate": "1401-03-10",
+        "signup_datetime": "2023-05-31 20:29:13.976535",
+        "user_role": 0,
+        "cinema_debit_card": 0,
+        "bank_accounts": [
+            "2450-9251-8223-8571"
+        ]
     }
 }
