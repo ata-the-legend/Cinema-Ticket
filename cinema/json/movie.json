@@ -1,0 +1,20 @@
+{
+    "1": {
+        "movie_id": "1",
+        "name": "lion skin",
+        "director": "hasan",
+        "description": "description....",
+        "duration_time": "2:50",
+        "age_limit": "16",
+        "product_year": "1401"
+    },
+    "2": {
+        "movie_id": "2",
+        "name": "star wars",
+        "director": "babllll",
+        "description": "description....",
+        "duration_time": "3:00",
+        "age_limit": "12",
+        "product_year": "2007"
+    }
+}

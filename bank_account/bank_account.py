@@ -1,5 +1,5 @@
 from uuid import uuid4
-from extra import save, get_database, get_object, delete
+from bank_account.bank_extra import save_bank_account,get_bank_database,delete_bank_account, get_bank_account_object
 
 class BankAccount:
 
@@ -74,7 +74,7 @@ class BankAccount:
         cvv2 = cls.cvv2_creator()
         password = cls.password_creator()
         account = cls(input_owner_name, input_bank, input_balance, serial_number, cvv2, password)
-        save(vars(account))
+        save_bank_account(vars(account))
         return account
         #this serial number should save in user_accounts!!!
 
@@ -97,22 +97,11 @@ Balance       >>>   {self.__balance:,}"
         Returns:
             str: show all information with an f"string"
         """
-        user_dict = get_object(serial_number)
+        user_dict = get_bank_account_object(serial_number)
         user = cls(user_dict["owner_name"], user_dict["bank"], user_dict["_BankAccount__balance"], user_dict["serial_number"], user_dict["cvv2"], user_dict["_BankAccount__password"])
         return user
     
-#         owner_name = user["owner_name"]
-#         bank = user["bank"]
-#         cvv2 = user["cvv2"]
-#         password = user["_BankAccount__password"]
-#         balance = user["_BankAccount__balance"]
 
-#         return f"\"{bank}\" bank information:\n\
-# Owner Name    >>>   {owner_name}\n\
-# Serial Number >>>   {serial_number}\n\
-# CVV2          >>>   {cvv2}\n\
-# Password      >>>   {password}\n\
-# Balance       >>>   {balance:,}"
 
     def add(self, amount: int) -> int:
         """
@@ -131,8 +120,8 @@ Balance       >>>   {self.__balance:,}"
         if amount < 0:
             raise ValueError("Invalid Amount")
         self.__balance += amount
-        delete(self.serial_number)
-        save(vars(self))
+        delete_bank_account(self.serial_number)
+        save_bank_account(vars(self))
         return self.__balance
 
     def sub(self, amount: int, password: str) -> int:
@@ -160,8 +149,8 @@ Balance       >>>   {self.__balance:,}"
         if new_balance < 0 :
             raise ValueError("Insufficient Inventory")
         self.__balance = new_balance
-        delete(self.serial_number)
-        save(vars(self))
+        delete_bank_account(self.serial_number)
+        save_bank_account(vars(self))
         return self.__balance
 
     def transfer_to_another(self, other: "BankAccount", amount: int,
@@ -196,7 +185,7 @@ Balance       >>>   {self.__balance:,}"
         Returns:
             bool: True if serial is valid.
         """
-        if get_object(serial_number):
+        if get_bank_account_object(serial_number):
             return True
         return False
 

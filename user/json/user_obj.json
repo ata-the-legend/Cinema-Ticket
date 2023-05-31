@@ -1,0 +1,13 @@
+{
+    "pouriya": {
+        "user_id": "95ef55b3-e35e-4bdc-87d3-ac09d51b055c",
+        "username": "pouriya",
+        "phone_number": null,
+        "_User__password": "aedec0d0ca66f380aed5fa5634c513c1bdfedc50ff2d734104809ddbc8b82295",
+        "birthdate": "1995-8-8",
+        "signup_datetime": "2023-05-30 15:52:09.251272",
+        "user_role": 0,
+        "cinema_debit_card": 199990000,
+        "bank_accounts": []
+    }
+}
