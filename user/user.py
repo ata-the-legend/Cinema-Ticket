@@ -13,7 +13,7 @@ class UserRole(Enum):
 
 class User:
     def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str,
-                 user_role: UserRole,cinema_debit_card=0, phone_number: str = None) -> None:
+                 user_role: UserRole,cinema_debit_card=0, bank_accounts: list = [], phone_number: str = None) -> None:
 
         """
         this is initializer for User class
@@ -30,7 +30,7 @@ class User:
         self.signup_datetime = signup_datetime
         self.user_role = user_role.value
         self.cinema_debit_card = cinema_debit_card
-        self.bank_accounts = []
+        self.bank_accounts = bank_accounts
 
     def show_bank_account(self):
         ...
@@ -90,7 +90,7 @@ class User:
 
             user_role = UserRole(user['user_role'])
             user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'],
-                       user['signup_datetime'], user_role, user['phone_number'])
+                       user['signup_datetime'], user_role, user['cinema_debit_card'], user['bank_accounts'], user['phone_number'])
             return user
         else:
             return None
@@ -201,7 +201,7 @@ class User:
                f'Phone_number = {phone_number}\n' \
                f'Birthdate = {self.birthdate}\n' \
                f'Sign up Date = {self.signup_datetime}\n' \
-               f'User Level = {UserRole(self.user_role).name}'
+               f'User Access Level = {UserRole(self.user_role).name}'
 
     def save_bank_account(self, serial_number) -> None:
         """
