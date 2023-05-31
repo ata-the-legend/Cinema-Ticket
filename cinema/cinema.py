@@ -5,7 +5,8 @@ from cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_d
     save_ticket, get_ticket_database, get_ticket_object, delete_ticket, \
     save_user_subscription, get_user_subscription_database, delete_user_subscription, get_user_subscription_object
 from bank_account.bank_account import BankAccount
-from user.user_extra import get_object
+from user.user_extra import get_object, delete,save
+from user.user import User, UserRole
 from datetime import datetime, timedelta
 
 
@@ -246,34 +247,35 @@ class Ticket:
         else:
             return False
 
-    @staticmethod
-    def subscription_discount(owner_username):
+    @classmethod
+    def subscription_discount(cls,owner_username):
         subscription = get_user_subscription_object(owner_username)
+        print(subscription)
         level = subscription['level']
-        transaction_count = subscription['transition_count']
-        expire_date = datetime.strptime(subscription['expire_date'], "%Y-%m-%d")
 
         if level == "bronze":
             return 0
         elif level == "silver":
+            transaction_count = subscription['transition_count']
             if transaction_count <= 3:
                 delete_user_subscription(owner_username)
                 expire_date = None
                 transaction_count += 1
-                obj = Subscription('silver', owner_username, expire_date, transaction_count)
+                obj = cls('silver', owner_username, expire_date, transaction_count)
                 save_user_subscription(vars(obj))
                 return 0.2
             else:
                 delete_user_subscription(owner_username)
-                obj = Subscription('bronze', owner_username)
+                obj = cls('bronze', owner_username)
                 save_user_subscription(vars(obj))
                 return 0
         elif level == "gold":
+            expire_date = datetime.strptime(subscription['expire_date'], "%Y-%m-%d")
             if datetime.today() <= expire_date:
                 return 0.5
             else:
                 delete_user_subscription(owner_username)
-                obj = Subscription('bronze', owner_username)
+                obj = cls('bronze', owner_username)
                 save_user_subscription(vars(obj))
                 return 0
 
@@ -314,11 +316,35 @@ class Ticket:
         else:
             print("this session doesn't have capacity")
 
+    @staticmethod
+    def cinema_debit_card_sub(owner_username, amount):
+        user = get_object(owner_username)
+        inventory = user['cinema_debit_card']
+        if inventory >= int(amount):
+            new_inventory = inventory - int(amount)
+            delete(user['username'])
+            obj = User(user['username'], user['_User__password'], user['birthdate'],
+                       user['user_id'], user['signup_datetime'], UserRole(user['user_role']),
+                       new_inventory, user['phone_number'])
+            save(vars(obj))
+        else:
+            raise 'balance not enough'
+
     @classmethod
     def buy_ticket(cls, owner_username, session_id):
-        ticket_id = cls.generate_id()
-        ticket = cls(ticket_id, session_id, owner_username)
-        save_ticket(vars(ticket))
+        session = get_session_object(session_id)
+        if int(session['capacity']) >= 1:
+            price = int(session['price'])
+            user = get_object(owner_username)
+            discount = cls.apply_discount(owner_username)
+            final_price = price * (1-discount)
+            if user['cinema_debit_card'] >= final_price:
+                cls.cinema_debit_card_sub(owner_username, final_price)
+                ticket_id = cls.generate_id()
+                ticket = cls(ticket_id, session_id, owner_username)
+                save_ticket(vars(ticket))
+            else:
+                print('Your wallet balance is Not enough')
 
     @staticmethod
     def generate_id():
@@ -331,7 +357,8 @@ class Ticket:
         return str(last_id)
 
 
-Ticket.show_ticket('saba', '2')
+Ticket.buy_ticket('pouriya', '2')
+# Ticket.show_ticket('saba', '2')
 # Ticket.apply_discount('saba')
 
 class Subscription:

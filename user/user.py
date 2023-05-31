@@ -1,15 +1,9 @@
 import uuid, hashlib, re as regex
-from user_extra import save, get_object, delete
+from user.user_extra import save, get_object, delete
 from datetime import datetime
 from enum import Enum
 import time
-from custom_exception import PasswordError, UsernameError, RegisterError, LoginError
-
-
-# class DebitCardType(Enum):
-#     BRONZE = 'bronze'
-#     SILVER = 'silver'
-#     GOLD = 'gold'
+from user.custom_exception import PasswordError, UsernameError, RegisterError, LoginError
 
 
 class UserRole(Enum):
@@ -19,7 +13,7 @@ class UserRole(Enum):
 
 class User:
     def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str,
-                 user_role: UserRole, phone_number: str = None) -> None:
+                 user_role: UserRole,cinema_debit_card=0, phone_number: str = None) -> None:
 
         """
         this is initializer for User class
@@ -35,7 +29,7 @@ class User:
         self.birthdate = birthdate
         self.signup_datetime = signup_datetime
         self.user_role = user_role.value
-        self.cinema_debit_card = 0
+        self.cinema_debit_card = cinema_debit_card
         self.bank_accounts = []
 
     def show_bank_account(self):
@@ -122,7 +116,7 @@ class User:
             user_id = str(uuid.uuid4())
             signup_datetime = str(datetime.now())
             user_role = UserRole.PUBLIC
-            user = User(username, password, birthdate, user_id, signup_datetime, user_role, phone_number)
+            user = User(username, password, birthdate, user_id, signup_datetime, user_role, 0,phone_number)
             save(vars(user))
             return user
 

@@ -6,9 +6,9 @@
         "transition_count": null
     },
     "pouriya": {
-        "level": "silver",
+        "level": "gold",
         "owner_username": "pouriya",
-        "expire_date": null,
-        "transition_count": 3
+        "expire_date": "2023-06-30",
+        "transition_count": null
     }
 }
