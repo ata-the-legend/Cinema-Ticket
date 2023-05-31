@@ -58,9 +58,6 @@ class Movie:
             last_id = 1
         return str(last_id)
 
-# Movie.add_movie("star wars", 'babllll', '3:00', '2007', '12', 'description....')
-# Movie.show_movie()
-
 
 class Cinema:
     def __init__(self,cinema_id, name, location, working_hours):
@@ -68,8 +65,6 @@ class Cinema:
         self.location = location
         self.working_hours = working_hours
         self.cinema_id = cinema_id
-        # BankAccount.create_account(name, 'dd',0000)
-        # self.cinema_serial_bank_account = ...
 
     @staticmethod
     def show_which_cinema(movie_id, username):
@@ -90,26 +85,9 @@ class Cinema:
             print('your age is lower than age limit . you dont take this movie')
 
     @staticmethod
-    def change_cinema_account(serial_number: str) -> None:
-        """
-        Changes the bank account number for cinema to be set for income account.
+    def charge_debit_card(username, serial, password, cvv2):
+        pass
 
-        Args:
-            serial_number (str): A valid bank account number.
-        """
-        Ticket.cinema_account = serial_number
-
-    @classmethod
-    def is_cinema_account(cls) -> bool:
-        """
-        It will check is admin defined a bank account?
-
-        Returns:
-            bool: True if there is a defined accaount for cinema
-        """
-        if cls.__cinema_account:
-            return True
-        return False
 
     @classmethod
     def cinema_add(cls, name, location, working_hours):
