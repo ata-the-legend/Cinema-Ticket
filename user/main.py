@@ -118,7 +118,24 @@ def bank_operation(serial: str):
                     input('Back to operations menu:(Y) ')
 
             case '3':
-                pass
+                clear_screen()
+                destination_account = input('Enter destination account serial: ')
+                if BankAccount.is_serial(destination_account):
+                    try:
+                        amount = int(input('Amount: '))
+                        password = pwinput(prompt='Password for this account: ', mask='*')
+                        cvv2 = pwinput(prompt='CVV2 for this account: ', mask='*')
+                        user_account.transfer_to_another(BankAccount.show_account(destination_account), amount, password, cvv2)
+                    except ValueError as e:
+                        print(str(e))
+                        print("Operation was unsuccessful!")
+                        sleep(3)
+                    else:
+                        print("Operation was successful!")
+                        input('Back to operations menu:(Y) ')
+                else:
+                    print('Invalid account serial!')
+                    sleep(3)
     # create account --> serial , pass
         #input --bank name(menu) --balance
         #save in user accounts
