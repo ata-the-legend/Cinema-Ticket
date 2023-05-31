@@ -89,19 +89,18 @@ class Cinema:
 
     @classmethod
     def charge_debit_card(cls,username:str, amount:str, serial_number:str, password:str, cvv2:str):
-        bank_account = get_bank_account_object(serial_number)
-        if bank_account['password'] == password and bank_account['cvv2'] == cvv2:
-            BankAccount.transfer_to_another(cls.cinema_bank_account, serial_number, password, cvv2)
+        if BankAccount.is_serial(serial_number):
+            cinema_bank_account = BankAccount.show_account(cls.cinema_bank_account)
+            bank_account = BankAccount.show_account(serial_number)
+            bank_account.transfer_to_another(cinema_bank_account, amount, password, cvv2)
             user = get_object(username)
             debit = user['cinema_debit_card']
             new_inventory = debit + int(amount)
+            user['cinema_debit_card'] = new_inventory
             delete(username)
-            obj = User(user['username'], user['_User__password'], user['birthdate'],
-                       user['user_id'], user['signup_datetime'], UserRole(user['user_role']),
-                       new_inventory, user['phone_number'])
-            save(vars(obj))
+            save(user)
         else:
-            raise 'your password or cvv2 incorrect'
+            raise 'incorrect serial number'
 
     @classmethod
     def cinema_add(cls, name, location, working_hours):
