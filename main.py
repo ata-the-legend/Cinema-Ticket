@@ -3,6 +3,8 @@ import pwinput
 import os
 from time import sleep
 from bank_account.bank_account import BankAccount
+from cinema.cinema import Movie, Cinema, Salon, Session, Ticket, Subscription
+from cinema.cinema_extra import get_user_subscription_object
 
 def clear_screen():
     if os.name == 'posix':
@@ -213,8 +215,94 @@ def bank(user: User):
  
 
 def cinema(user):
-    print('------------------------- Cinema ---------------------------')
+    while True:
+        clear_screen()
+        cinema_order = input(f'\n------------------------- Cinema ---------------------------\n'
+                             f'hint : before select movies and buy ticket you must charge your Debit card!\n\n'
+                             f'View and select movies and buy tickets ---------------> enter number (1)\n'
+                             f'Debit card--------------> enter number (2)\n'
+                             f'Management -------> enter number (3)\n'
+                             f'Back to main menu --------------> enter number (0)\n'
+                             f'\nPlease insert your choice : ')
+        match cinema_order:
+            case '0':
+                clear_screen()
+                break
+            case '1':
+                clear_screen()
+                while True:
+                    print(f'\n------------------------- Movies ---------------------------\n')
+                    if Movie.show_movie():
+                        print(Movie.show_movie())
+                        movie_id = input('\nPlease insert your selected movie id: ')
+                        try:
+                            print(Cinema.show_which_cinema(movie_id, user.username))
+                            cinema_id = input('\nPlease insert your selected cinema id: ')
+                            print(Salon.show_which_salon(movie_id, cinema_id))
+                            salon_id = input('\nPlease insert your selected salon id: ')
+                            print(Session.show_which_session(movie_id, cinema_id, salon_id))
+                            session_id = input('\nPlease insert your selected session id: ')
+                            print(Ticket.show_ticket(user.username, session_id))
+                            sure = input('are you sure to buy this ticket?(y/n)')
+                            if sure == 'y':
+                                Ticket.buy_ticket(user.username, session_id)
+                                print('your ticket reserved successfully')
+                                break
+                            else:
+                                print('operation canceled...!')
 
+                        except ValueError as e:
+                            print(e)
+                    else:
+                        print(' Movies list is empty ! ')
+            case '2':
+                clear_screen()
+                while True:
+                    debit_order = input(f'\n------------------------- Debit card ---------------------------\n'
+                                        f'your subscription level: {get_user_subscription_object(user.username)["level"]}\n'
+                                        f'Debit card inventory: {user.cinema_debit_card}\n\n'
+                                         f'Charge your debit card---------------> enter number (1)\n'
+                                         f'Buy subscription-------------> enter number (2)\n'
+                                         f'Back to main menu --------------> enter number (0)\n'
+                                         f'\nPlease insert your choice : ')
+                    match debit_order:
+                        case '1':
+                            print('--------------------------------charge debit card-------------------------------')
+                            amount = input('amount cash: ')
+                            serial_number = input('your bank account serial number: ')
+                            password = pwinput.pwinput('bank account password: ')
+                            cvv2 = pwinput.pwinput('your bank account cvv2')
+                            try:
+                                Cinema.charge_debit_card(user.username, amount, serial_number, password, cvv2)
+                            except Exception as e:
+                                print(e)
+                        case '2':
+                            print('------------------------------- Buy Subscription -------------------------------\n')
+                            print('-----------------------silver------------------------ \n'
+                                  'name : silver'
+                                  'price : 50,000\n'
+                                  'description : This service returns 20% \n'
+                                  'of the amount of each transaction to her wallet up\n'
+                                  ' to three future purchases.\n')
+                            print('------------------------gold------------------------ \n'
+                                  'name : Gold'
+                                  'price : 130,000\n'
+                                  'description : This service pays 50% of the amount plus \n'
+                                  ' a free energy drink for the next month\n')
+                            choices_level = input('please insert your choice (gold/silver):')
+                            try:
+                                Subscription.buy_subscription(choices_level, user.username)
+                            except Exception as e:
+                                print(e)
+                        case '0':
+                            break
+                        case _:
+                            print('invalid choice')
+
+            case '3':
+                pass
+            case _:
+                print('invalid choice!')
 def main():
     while True:
         clear_screen()
