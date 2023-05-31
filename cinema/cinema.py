@@ -1,4 +1,4 @@
-from extra import save_movie, get_movie_object, delete_movie, get_movie_database,\
+from cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_database,\
     save_cinema, get_cinema_database,get_cinema_object,delete_cinema,\
     save_salon, get_salon_database,get_salon_object, delete_salon,\
     save_session, get_session_database, get_session_object, delete_session, \
@@ -251,7 +251,7 @@ class Ticket:
         subscription = get_user_subscription_object(owner_username)
         level = subscription['level']
         transaction_count = subscription['transition_count']
-        expire_date = datetime.strptime(subscription['expire_date'], "%Y/%m/%d")
+        expire_date = datetime.strptime(subscription['expire_date'], "%Y-%m-%d")
 
         if level == "bronze":
             return 0
@@ -301,12 +301,14 @@ class Ticket:
                 session_time = session['start_time'] + ' to ' + session['end_time']
                 session_datetime = session['datetime']
                 final_price = final_price
-                print(f'====================== Your Ticket ========================'
-                      f'movie  : {movie_name}'
-                      f'cinema : {cinema_name}'
-                      f'salon  : {salon_name}'
-                      f'date   : {session_datetime}   |   time : {session_time}'
-                      f'final price : {final_price}')
+                print(f' _________________________ Your Ticket __________________________\n'
+                      f'       movie  : {movie_name}\n'
+                      f'       cinema : {cinema_name}\n'  
+                      f'       salon  : {salon_name} \n'
+                      f'       date : {session_datetime}\n'
+                      f'       time : {session_time}\n'
+                      f'       final price : {final_price}\n'
+                      f' __________________________________________________________________')
             else:
                 print('Your wallet balance is Not enough')
         else:
@@ -330,7 +332,7 @@ class Ticket:
 
 
 Ticket.show_ticket('saba', '2')
-
+# Ticket.apply_discount('saba')
 
 class Subscription:
     def __init__(self, level, owner_username, expire_date=None, transition_count=None):
@@ -345,7 +347,8 @@ class Subscription:
             case 'gold':
                 # if bank transition is success :
                 purchase_date = datetime.today()
-                expire_date = str(purchase_date + timedelta(days=30))
+                expire_date = purchase_date + timedelta(days=30)
+                expire_date_str = datetime.strftime(expire_date, '%Y-%m-%d')
                 subscription = cls(choices_subscription, owner_username, expire_date, transition_count=None)
                 save_user_subscription(vars(subscription))
             case 'silver':

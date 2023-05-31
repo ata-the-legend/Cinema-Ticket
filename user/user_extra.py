@@ -1,4 +1,5 @@
 import json
+import importlib.resources
 
 
 def get_database() -> dict:
@@ -52,11 +53,10 @@ def get_object(username:str) -> dict | None:
     :return: user object
     """
     try:
-        with open("user_obj.json", "r") as fp:
+        with open("../user/user_obj.json", "r") as fp:
             # Load the dictionary from the file
             person_dict = json.load(fp)
             user = person_dict[username]
             return user
     except Exception as e:
         raise e
-
