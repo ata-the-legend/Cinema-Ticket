@@ -310,7 +310,6 @@ class Ticket:
 Ticket.show_ticket('saba', '2')
 
 
-
 class Subscription:
     def __init__(self, level, owner_username, expire_date=None, transition_count=None):
         self.level = level
@@ -322,10 +321,17 @@ class Subscription:
     def buy_subscription(cls, choices_subscription, owner_username, serial_bank_account, password, cvv2):
         match choices_subscription:
             case 'gold':
+                # if bank transition is success :
                 purchase_date = datetime.today()
                 expire_date = purchase_date + timedelta(days=30)
-                subscription = cls(choices_subscription, owner_username, expire_date)
-                #save()
+                subscription = cls(choices_subscription, owner_username, expire_date, transition_count=None)
+                save_user_subscription(vars(subscription))
             case 'silver':
-                ...
+                # if bank transition is success :
+                transition_count = 3
+                expire_date = None
+                subscription = cls(choices_subscription, owner_username, expire_date,transition_count)
+                save_user_subscription(vars(subscription))
+
+
 
