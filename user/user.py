@@ -1,4 +1,4 @@
-import uuid, hashlib
+import uuid, hashlib, re as regex
 from extra import save, get_object, delete
 from datetime import datetime
 from enum import Enum
@@ -6,10 +6,10 @@ import time
 from custom_exception import PasswordError, UsernameError, RegisterError, LoginError
 
 
-class DebitCardType(Enum):
-    BRONZE = 1
-    SILVER = 2
-    GOLD = 3
+# class DebitCardType(Enum):
+#     BRONZE = 'bronze'
+#     SILVER = 'silver'
+#     GOLD = 'gold'
 
 
 class UserRole(Enum):
@@ -19,7 +19,7 @@ class UserRole(Enum):
 
 class User:
     def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str,
-                 user_role: UserRole, debit_card_type: DebitCardType, phone_number: str = None) -> None:
+                 user_role: UserRole, phone_number: str = None) -> None:
 
         """
         this is initializer for User class
@@ -37,10 +37,14 @@ class User:
         self.user_role = user_role.value
         self.cinema_debit_card = 0
         self.bank_accounts = []
-        self.debit_card_type = debit_card_type.value
 
     def show_bank_account(self):
         ...
+
+    @staticmethod
+    def validate_phone_number(number):
+        pattern = r"^(?:\+98|0)?9\d{9}$"
+        return bool(regex.match(pattern, number))
 
     @staticmethod
     def validate_pass(password: str) -> None:
@@ -90,13 +94,12 @@ class User:
         user = get_object(username)
         if user is not None:
 
-            debit_card_type = DebitCardType(user['debit_card_type'])
             user_role = UserRole(user['user_role'])
             user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'],
-                       user['signup_datetime'], user_role, debit_card_type, user['phone_number'])
+                       user['signup_datetime'], user_role, user['phone_number'])
             return user
         else:
-            return None ##??
+            return None
 
     @classmethod
     def create_user(cls, username: str, password: str, birthdate: str, phone_number:str =None) -> 'User':
@@ -118,13 +121,10 @@ class User:
             password = cls.build_pass(password)
             user_id = str(uuid.uuid4())
             signup_datetime = str(datetime.now())
-            debit_card_type = DebitCardType.BRONZE
             user_role = UserRole.PUBLIC
-            user = User(username, password, birthdate, user_id, signup_datetime, user_role, debit_card_type, phone_number)
+            user = User(username, password, birthdate, user_id, signup_datetime, user_role, phone_number)
             save(vars(user))
             return user
-
-        ## check phone number
 
     def promote_to_staff(self) -> None:
         self.user_role = UserRole.STAFF.value
@@ -156,14 +156,12 @@ class User:
         :param new_username: new user-name
         :param new_phone_number: new phone number
         """
-        if self.validate_username(new_username): ####
-            return self.validate_username(new_username) ######
+        if self.validate_username(new_username):
+            return self.validate_username(new_username)
         delete(self.username)
         self.username = new_username
         self.phone_number = new_phone_number
         save(vars(self))
-    
-        ## check phone number or be optional
 
     def change_password(self, old: str, new: str, confirm_new: str) -> None:
         """
@@ -174,7 +172,7 @@ class User:
         """
         old = self.build_pass(old)
         if old == self._User__password:
-            if self.match_pass(new, confirm_new): ## this could be checked for more safty and diferent messages
+            if self.match_pass(new, confirm_new):
                 if self.validate_pass(new) is None:
                     new = self.build_pass(new)
                     delete(self.username)
