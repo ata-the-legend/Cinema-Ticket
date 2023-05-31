@@ -355,10 +355,83 @@ def cinema(user):
                                         case '4':
                                             movie_id = input('movie_id')
                                             Movie.delete_movie(movie_id)
+                                        case '0':
+                                            break
                             case '2':
-                                ...
+                                clear_screen()
+                                while True:
+                                    cinema_order = \
+                                        input(f'\n-------------------------  cinema  ---------------------------\n'
+                                              f'Show cinema---------------> enter number (1)\n'
+                                              f'Add cinema---------------> enter number (2)\n'
+                                              f'Edit cinema-------------> enter number (3)\n'
+                                              f'Delete cinema--------------> enter number (4)\n'
+                                              f'Back to main menu --------------> enter number (0)\n'
+                                              f'\nPlease insert your choice : ')
+                                    match cinema_order:
+                                        case '1':
+                                            print(Cinema.show_cinema())
+                                        case '2':
+                                            name = input('name:')
+                                            location = input('location')
+                                            working_hours = input('working_hours')
+                                            try:
+                                                Cinema.cinema_add(name, location,
+                                                                  working_hours)
+                                            except Exception as e:
+                                                print(e)
+                                        case '3':
+                                            cinema_id = input('cinema_id')
+                                            movie_id = input('movie_id:')
+                                            location = input('location')
+                                            working_hours = input('working_hours')
+                                            try:
+                                                Cinema.cinema_edit(cinema_id,movie_id,location, working_hours)
+                                            except Exception as e:
+                                                print(e)
+                                        case '4':
+                                            cinema_id = input('cinema_id')
+                                            Cinema.delete_cinema(cinema_id)
+                                        case '0':
+                                            break
+
                             case '3':
-                                ...
+                                clear_screen()
+                                while True:
+                                    cinema_order = \
+                                        input(f'\n-------------------------  salon  ---------------------------\n'
+                                              f'Show salon---------------> enter number (1)\n'
+                                              f'Add salon---------------> enter number (2)\n'
+                                              f'Edit salon-------------> enter number (3)\n'
+                                              f'Delete salon--------------> enter number (4)\n'
+                                              f'Back to main menu --------------> enter number (0)\n'
+                                              f'\nPlease insert your choice : ')
+                                    match cinema_order:
+                                        case '1':
+                                            print(Cinema.show_cinema())
+                                        case '2':
+                                            name = input('name:')
+                                            location = input('location')
+                                            working_hours = input('working_hours')
+                                            try:
+                                                Cinema.cinema_add(name, location,
+                                                                  working_hours)
+                                            except Exception as e:
+                                                print(e)
+                                        case '3':
+                                            cinema_id = input('cinema_id')
+                                            movie_id = input('movie_id:')
+                                            location = input('location')
+                                            working_hours = input('working_hours')
+                                            try:
+                                                Cinema.cinema_edit(cinema_id, movie_id, location, working_hours)
+                                            except Exception as e:
+                                                print(e)
+                                        case '4':
+                                            cinema_id = input('cinema_id')
+                                            Cinema.delete_cinema(cinema_id)
+                                        case '0':
+                                            break
                             case '4':
                                 ...
                             case '0':

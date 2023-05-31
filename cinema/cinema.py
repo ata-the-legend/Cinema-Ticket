@@ -76,6 +76,13 @@ class Cinema:
         self.cinema_id = cinema_id
 
     @staticmethod
+    def show_cinema():
+        for id, cinema in get_cinema_database().items():
+            if id and cinema :
+                return f'({id}) - {cinema["name"]}'
+            return None
+
+    @staticmethod
     def show_which_cinema(movie_id, username):
         birthdate = datetime.strptime(get_object(username)['birthdate'],  "%Y-%m-%d")
         current_date = datetime.now()
