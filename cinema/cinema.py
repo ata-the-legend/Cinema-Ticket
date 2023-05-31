@@ -1,4 +1,4 @@
-from cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_database,\
+from .cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_database,\
     save_cinema, get_cinema_database,get_cinema_object,delete_cinema,\
     save_salon, get_salon_database,get_salon_object, delete_salon,\
     save_session, get_session_database, get_session_object, delete_session, \
@@ -21,6 +21,10 @@ class Movie:
         self.duration_time = duration_time
         self.age_limit = age_limit
         self.product_year = product_year
+
+    @staticmethod
+    def is_valid_movie_id(movie_id):
+        ...
 
     @classmethod
     def add_movie(cls,name:str, director:str, duration_time:str, product_year, age_limit, description:str=None):
@@ -47,7 +51,9 @@ class Movie:
     @staticmethod
     def show_movie():
         for id, movies in get_movie_database().items():
-            print(f'({id}) - {movies["name"]}')
+            if id and movies :
+                return f'({id}) - {movies["name"]}'
+            return None
 
     @staticmethod
     def generate_id():
@@ -61,7 +67,7 @@ class Movie:
 
 
 class Cinema:
-    cinema_bank_account = ...
+    cinema_bank_account = '2450-9251-8223-8571'
 
     def __init__(self,cinema_id, name, location, working_hours):
         self.name = name
@@ -81,18 +87,18 @@ class Cinema:
             for session in sessions:
                 if session['movie_id'] == movie_id:
                     cinema = get_cinema_object(session['cinema_id'])
-                    print(f"{cinema['cinema_id']} - {cinema['name']}")
+                    return f"{cinema['cinema_id']} - {cinema['name']}"
                 else:
-                    print('not found cinema for this movie')
+                    raise ValueError('not found cinema for this movie')
         else:
-            print('your age is lower than age limit . you dont take this movie')
+            raise ValueError('your age is lower than age limit . you cant select this movie')
 
     @classmethod
     def charge_debit_card(cls,username:str, amount:str, serial_number:str, password:str, cvv2:str):
         if BankAccount.is_serial(serial_number):
             cinema_bank_account = BankAccount.show_account(cls.cinema_bank_account)
             bank_account = BankAccount.show_account(serial_number)
-            bank_account.transfer_to_another(cinema_bank_account, amount, password, cvv2)
+            bank_account.transfer_to_another(cinema_bank_account, int(amount), password, cvv2)
             user = get_object(username)
             debit = user['cinema_debit_card']
             new_inventory = debit + int(amount)
@@ -100,7 +106,7 @@ class Cinema:
             delete(username)
             save(user)
         else:
-            raise 'incorrect serial number'
+            raise ValueError('incorrect serial number')
 
     @classmethod
     def cinema_add(cls, name, location, working_hours):
@@ -159,9 +165,9 @@ class Salon:
         for session in sessions:
             if session['movie_id'] == movie_id and session['cinema_id'] == cinema_id:
                 salon = get_salon_object(session['salon_id'])
-                print(f"({salon['salon_id']}) - {salon['name']}")
+                return f"({salon['salon_id']}) - {salon['name']}"
             else:
-                print('not found salon for this movie')
+                raise ValueError('not found salon for this movie')
 
     @staticmethod
     def generate_id():
@@ -214,11 +220,11 @@ class Session:
                session['salon_id'] == salon_id:
 
                 session = get_session_object(session['session_id'])
-                print(f"({session['salon_id']}) - |{session['start_time']} to {session['end_time']} \n      "
-                      f"|capacity status : {session['capacity']} empty seats\n      "
-                      f"|price : {session['price']}")
+                return f"({session['salon_id']}) - |{session['start_time']} to {session['end_time']} \n      "\
+                       f"|capacity status : {session['capacity']} empty seats\n      "\
+                       f"|price : {session['price']}"
             else:
-                print('not found session for this movie')
+                raise ValueError('not found session for this movie')
 
     @staticmethod
     def generate_id():
@@ -246,8 +252,8 @@ class Ticket:
         else:
             return False
 
-    @classmethod
-    def subscription_discount(cls,owner_username):
+    @staticmethod
+    def subscription_discount(owner_username):
         subscription = get_user_subscription_object(owner_username)
         print(subscription)
         level = subscription['level']
@@ -260,12 +266,12 @@ class Ticket:
                 delete_user_subscription(owner_username)
                 expire_date = None
                 transaction_count += 1
-                obj = cls('silver', owner_username, expire_date, transaction_count)
+                obj = Subscription('silver', owner_username, expire_date, transaction_count)
                 save_user_subscription(vars(obj))
                 return 0.2
             else:
                 delete_user_subscription(owner_username)
-                obj = cls('bronze', owner_username)
+                obj = Subscription('bronze', owner_username)
                 save_user_subscription(vars(obj))
                 return 0
         elif level == "gold":
@@ -274,7 +280,7 @@ class Ticket:
                 return 0.5
             else:
                 delete_user_subscription(owner_username)
-                obj = cls('bronze', owner_username)
+                obj = Subscription('bronze', owner_username)
                 save_user_subscription(vars(obj))
                 return 0
 
@@ -302,18 +308,18 @@ class Ticket:
                 session_time = session['start_time'] + ' to ' + session['end_time']
                 session_datetime = session['datetime']
                 final_price = final_price
-                print(f' _________________________ Your Ticket __________________________\n'
-                      f'       movie  : {movie_name}\n'
-                      f'       cinema : {cinema_name}\n'  
-                      f'       salon  : {salon_name} \n'
-                      f'       date : {session_datetime}\n'
-                      f'       time : {session_time}\n'
-                      f'       final price : {final_price}\n'
-                      f' __________________________________________________________________')
+                return f' _________________________ Your Ticket __________________________\n'\
+                      f'       movie  : {movie_name}\n'\
+                      f'       cinema : {cinema_name}\n'\
+                      f'       salon  : {salon_name} \n'\
+                      f'       date : {session_datetime}\n'\
+                      f'       time : {session_time}\n'\
+                      f'       final price : {final_price}\n'\
+                      f' __________________________________________________________________'
             else:
-                print('Your wallet balance is Not enough')
+                raise ValueError('Your wallet balance is Not enough')
         else:
-            print("this session doesn't have capacity")
+            raise ValueError("this session doesn't have capacity")
 
     @staticmethod
     def cinema_debit_card_sub(owner_username, amount):
@@ -342,8 +348,11 @@ class Ticket:
                 ticket_id = cls.generate_id()
                 ticket = cls(ticket_id, session_id, owner_username)
                 save_ticket(vars(ticket))
+                session['capacity'] = str(int(session['capacity']) - 1)
+                delete_session(session_id)
+                save_session(session)
             else:
-                print('Your wallet balance is Not enough')
+                raise ValueError('Your wallet balance is Not enough')
 
     @staticmethod
     def generate_id():
@@ -364,23 +373,30 @@ class Subscription:
         self.transition_count = transition_count
 
     @classmethod
-    def buy_subscription(cls, choices_subscription, owner_username, serial_bank_account=None, password=None, cvv2=None):
+    def buy_subscription(cls, choices_subscription, owner_username):
         match choices_subscription:
             case 'gold':
-                # if bank transition is success :
+                price = 130_000
+                Ticket.cinema_debit_card_sub(owner_username, price)
                 purchase_date = datetime.today()
                 expire_date = purchase_date + timedelta(days=30)
                 expire_date_str = datetime.strftime(expire_date, '%Y-%m-%d')
-                subscription = cls(choices_subscription, owner_username, expire_date, transition_count=None)
+                subscription = cls(choices_subscription, owner_username, expire_date_str, transition_count=None)
                 save_user_subscription(vars(subscription))
+                return True
             case 'silver':
-                # if bank transition is success :
+                price = 50_000
+                Ticket.cinema_debit_card_sub(owner_username, price)
                 transition_count = 3
                 expire_date = None
                 subscription = cls(choices_subscription, owner_username, expire_date, transition_count)
                 save_user_subscription(vars(subscription))
+                return True
             case 'bronze':
                 expire_date = None
                 transition_count = None
                 subscription = cls(choices_subscription, owner_username, expire_date, transition_count)
                 save_user_subscription(vars(subscription))
+                return True
+            case _:
+                raise ValueError('invalid choice')
