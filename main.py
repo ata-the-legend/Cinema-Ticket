@@ -298,9 +298,76 @@ def cinema(user):
                             break
                         case _:
                             print('invalid choice')
-
             case '3':
-                pass
+                clear_screen()
+                while True:
+                    if user.user_role == 1:
+                        management_order =\
+                            input(f'\n------------------------- Management Cinema ---------------------------\n'
+                                             f'Movie---------------> enter number (1)\n'
+                                             f'Cinema-------------> enter number (2)\n'
+                                             f'Salon--------------> enter number (3)\n'
+                                             f'Session--------------> enter number (4)\n'
+                                             f'Back to main menu --------------> enter number (0)\n'
+                                             f'\nPlease insert your choice : ')
+                        match management_order:
+                            case '1':
+                                clear_screen()
+                                while True:
+                                    movie_order = \
+                                        input(f'\n-------------------------  movie  ---------------------------\n'
+                                              f'Show Movie---------------> enter number (1)\n'
+                                              f'Add movie---------------> enter number (2)\n'
+                                              f'Edit Movie-------------> enter number (3)\n'
+                                              f'Delete Movie--------------> enter number (4)\n'
+                                              f'Back to main menu --------------> enter number (0)\n'
+                                              f'\nPlease insert your choice : ')
+                                    match movie_order:
+                                        case '1':
+                                            print(Movie.show_movie())
+                                        case '2':
+                                            name = input('name:')
+                                            director = input('director:')
+                                            duration_time = input('duration_time:')
+                                            product_year = input('product_year:')
+                                            age_limit = input('age limit:')
+                                            description = input('description:')
+                                            try:
+                                                Movie.add_movie(name, director,
+                                                                duration_time, product_year,
+                                                                age_limit, description)
+                                            except Exception as e:
+                                                print(e)
+                                        case '3':
+                                            movie_id = input('movie_id:')
+                                            name = input('name:')
+                                            director = input('director:')
+                                            duration_time = input('duration_time:')
+                                            product_year = input('product_year:')
+                                            age_limit = input('age limit:')
+                                            description = input('description:')
+                                            try:
+                                                Movie.edit_movie(movie_id, name, director,
+                                                                 duration_time, product_year,
+                                                                 age_limit, description)
+                                            except Exception as e:
+                                                print(e)
+                                        case '4':
+                                            movie_id = input('movie_id')
+                                            Movie.delete_movie(movie_id)
+                            case '2':
+                                ...
+                            case '3':
+                                ...
+                            case '4':
+                                ...
+                            case '0':
+                                break
+                            case _:
+                                print('invalid choice')
+                    else:
+                        print('you dont have access to this menu ! just Staff...')
+                        break
             case _:
                 print('invalid choice!')
 def main():
