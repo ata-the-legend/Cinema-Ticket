@@ -8,7 +8,7 @@ def get_database() -> dict:
     :return: dictionary of user accounts
     """
     try:
-        with open("../user/user_obj.json", "r") as fp:
+        with open("../user/json/user_obj.json", "r") as fp:
             # Load the dictionary from the file
             return json.load(fp)
     except Exception as ex:
@@ -25,7 +25,7 @@ def save(user: dict) -> None:
     username = user['username']
     dic.update({username: user})
     try:
-        with open("../user/user_obj.json", "w") as fp:
+        with open("../user/json/user_obj.json", "w") as fp:
             json.dump(dic, fp, indent=4)  # encode dict into JSON
     except Exception as ex:
         print('You have error', ex)
@@ -40,7 +40,7 @@ def delete(username:str) -> None:
     dic = get_database()
     del dic[username]
     try:
-        with open("../user/user_obj.json", "w") as fp:
+        with open("../user/json/user_obj.json", "w") as fp:
             json.dump(dic, fp, indent=4)  # encode dict into JSON
     except Exception as ex:
         print('You have error', ex)
@@ -53,7 +53,7 @@ def get_object(username:str) -> dict | None:
     :return: user object
     """
     try:
-        with open("../user/user_obj.json", "r") as fp:
+        with open("../user/json/user_obj.json", "r") as fp:
             # Load the dictionary from the file
             person_dict = json.load(fp)
             user = person_dict[username]

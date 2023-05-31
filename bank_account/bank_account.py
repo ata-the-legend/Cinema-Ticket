@@ -1,5 +1,5 @@
 from uuid import uuid4
-from bank_account.bank_extra import save, get_database, get_object, delete
+from bank_account.bank_extra import save_bank_account,get_bank_database,delete_bank_account
 
 class BankAccount:
     accounts_dict = {}
@@ -69,6 +69,7 @@ class BankAccount:
             and return its serial number as string
         """
         usr = cls(input_owner_name, input_bank, input_balance)
+        save_bank_account(vars(usr))
         
         return usr.serial_number
         #this serial number should save in user_accounts!!!
