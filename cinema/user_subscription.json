@@ -1,1 +1,14 @@
-{}
+{
+    "saba": {
+        "level": "gold",
+        "owner_username": "saba",
+        "expire_date": "2023-06-30 05:55:24.825869",
+        "transition_count": null
+    },
+    "pouriya": {
+        "level": "silver",
+        "owner_username": "pouriya",
+        "expire_date": null,
+        "transition_count": 3
+    }
+}
