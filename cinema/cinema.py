@@ -92,7 +92,7 @@ class Cinema:
         if BankAccount.is_serial(serial_number):
             cinema_bank_account = BankAccount.show_account(cls.cinema_bank_account)
             bank_account = BankAccount.show_account(serial_number)
-            bank_account.transfer_to_another(cinema_bank_account, amount, password, cvv2)
+            bank_account.transfer_to_another(cinema_bank_account, int(amount), password, cvv2)
             user = get_object(username)
             debit = user['cinema_debit_card']
             new_inventory = debit + int(amount)
@@ -246,8 +246,8 @@ class Ticket:
         else:
             return False
 
-    @classmethod
-    def subscription_discount(cls,owner_username):
+    @staticmethod
+    def subscription_discount(owner_username):
         subscription = get_user_subscription_object(owner_username)
         print(subscription)
         level = subscription['level']
@@ -260,12 +260,12 @@ class Ticket:
                 delete_user_subscription(owner_username)
                 expire_date = None
                 transaction_count += 1
-                obj = cls('silver', owner_username, expire_date, transaction_count)
+                obj = Subscription('silver', owner_username, expire_date, transaction_count)
                 save_user_subscription(vars(obj))
                 return 0.2
             else:
                 delete_user_subscription(owner_username)
-                obj = cls('bronze', owner_username)
+                obj = Subscription('bronze', owner_username)
                 save_user_subscription(vars(obj))
                 return 0
         elif level == "gold":
@@ -274,7 +274,7 @@ class Ticket:
                 return 0.5
             else:
                 delete_user_subscription(owner_username)
-                obj = cls('bronze', owner_username)
+                obj = Subscription('bronze', owner_username)
                 save_user_subscription(vars(obj))
                 return 0
 
