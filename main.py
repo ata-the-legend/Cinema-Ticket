@@ -21,10 +21,11 @@ def sign_up():
     phone_number = input('Phone number (optional): ')
     birthdate = input('Birthdate:(year-month-day) ') 
     try:
-        if phone_number.isspace() or not phone_number: 
-            User.create_user(username, password, birthdate)
-        else:
+        if User.validate_phone_number(phone_number):
             User.create_user(username, password, birthdate, phone_number)
+        else: 
+            User.create_user(username, password, birthdate)
+            print('Phone number did not saved: invalid phone number')
         print('\n--- Your registration was successful ---\n')
         input("continue? ")
         return True
@@ -54,6 +55,9 @@ def edit_prof(user):
         new_username = user.username
         # if user is not str: ##??
     if new_phone_number == '':
+        new_phone_number = user.phone_number
+    elif not User.validate_phone_number(new_phone_number):
+        print('Phone number did not changed: invalid phone number')
         new_phone_number = user.phone_number
     try:
         user.change_info(new_username, new_phone_number)
