@@ -1,4 +1,4 @@
-from user import User
+from user.user import User
 import pwinput
 import os
 from time import sleep
