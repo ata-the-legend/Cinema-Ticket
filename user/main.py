@@ -2,6 +2,7 @@ from user import User
 import pwinput
 import os
 from time import sleep
+from ..bank_account.bank_account import BankAccount
 
 def clear_screen():
     if os.name == 'posix':
@@ -71,6 +72,98 @@ def edit_pass(user):
     except Exception as e:
         print(str(e))
         return False
+    
+def bank_operation(serial: str):
+    pass
+
+def bank(user: User):
+    while True:
+        clear_screen()
+        bank_order = input(f'\n------------------------- Bank ---------------------------'
+                            f'\n\n'
+                            f'Open new account ---------------> enter number (1)\n'
+                            f'Show my current accounts -------> enter number (2)\n'
+                            f'Banking operations--------------> enter number (3)\n'
+                            f'Back to main menu --------------> enter number (0)\n'
+                            f'\nPlease insert your choice : ')
+        match bank_order:
+            case '0':
+                break
+
+            case '1':
+                banks = {
+                    '1': 'Ayande',
+                    '2': 'Saman',
+                    '3': 'Pasargad',
+                }
+                while True:
+                    clear_screen()
+                    bank_name = input(f'\nSelect a bank to open account:'
+                                f'\n\n'
+                                f'Ayande -----------> enter number (1)\n'
+                                f'Saman ------------> enter number (2)\n'
+                                f'Pasargad ---------> enter number (3)\n'
+                                # f'Cancel ---------> enter number (4)\n'
+                                f'\nPlease insert your choice : ')
+                    if bank_name in banks.keys():
+                        break
+                    print('invalid choice!')
+                    sleep(3)
+
+                while True:
+                    amount = input("\nPrimary deposit amount: ")
+                    try:
+                        user_account = BankAccount.create_account(user.username, banks[bank_name], int(amount))
+                    except ValueError as e:
+                        print(str(e))
+                    else:
+                        user.save_bank_account(user_account.serial_number)
+                        clear_screen()
+                        print(user_account)
+                        input('\nBack to bank menu:(Y) ')
+                        break
+                    if input('Cancel:(Y) ').lower() == 'y':
+                        print("Operation was unsuccessful!")
+                        sleep(3)
+                        break 
+                    
+            case '2':
+                clear_screen()
+                print('Your available accounts:')
+                for serial in user.bank_accounts:
+                    print('\n')
+                    print(BankAccount.show_account(serial))
+                input('\nBack to bank menu:(Y) ')
+
+            case '3':
+                while True:
+                    clear_screen()
+                    serial = input('Enter your account number: ')
+                    if BankAccount.is_serial(serial):
+                        bank_operation(serial)
+                        input('\nBack to bank menu:(Y) ')
+                        break
+                    if input('\nIncorrect serial.\nTry again:(Y/N) ').lower() == 'n':
+                        break
+
+            case _:
+                print('invalid choice!')
+ 
+    # create account --> serial , pass
+        #input --bank name(menu) --balance
+        #save in user accounts
+    # show account --> for user.accounts print(show account
+    # bank oprations
+        #input --serial
+        #useraccount --> show account
+        # add
+            #inp --int(ammount
+        # sub
+            #input --int(amount --pass
+        # tranfer
+            #input --other account --int(amount) --pass --cvv2 
+            #userother --> show account
+
 
 def main():
     while True:
@@ -101,13 +194,13 @@ def main():
                         clear_screen()
                         input_order = input(f'\n------------------------ Welcome {user.username} ----------------------'
                                             f'\n\n'
-                                            f'Show Information ----> enter number 1\n'
-                                            f'Change username and phone number ----> enter number 2\n'
-                                            f'Change password ----> enter number 3\n'
-                                            f'Bank accounts ----> enter number 5\n'
-                                            f'Cinema ----> enter number 6\n'
-                                            f'Logout ----> enter number 0\n'
-                                            f'please insert your choice : ')
+                                            f'Show Information -----------------------> enter number (1)\n'
+                                            f'Change username and phone number -------> enter number (2)\n'
+                                            f'Change password ------------------------> enter number (3)\n'
+                                            f'Bank accounts --------------------------> enter number (4)\n'
+                                            f'Cinema ---------------------------------> enter number (5)\n'
+                                            f'Logout ---------------------------------> enter number (0)\n'
+                                            f'\nPlease insert your choice : ')
                         match input_order:
                             case '0':
                                 break
@@ -139,10 +232,11 @@ def main():
                                     sleep(3)
                                     break
 
-                            case '5':
-                                print('------------------------- Bank ---------------------------')
+                            case '4':
+                                bank(user)
 
-                            case '6':
+                            case '5':
+                                cinema()
                                 print('------------------------- Cinema ---------------------------')
                             case _:
                                 print('invalid choice!')

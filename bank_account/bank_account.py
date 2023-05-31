@@ -55,7 +55,7 @@ class BankAccount:
     def create_account(cls,
         input_owner_name: str,
         input_bank: str,
-        input_balance: int) -> str:
+        input_balance: int) -> 'BankAccount':
         """
         create a bank account
 
@@ -68,12 +68,14 @@ class BankAccount:
             create a BankAccount instance 
             and return its serial number as string
         """
+        if input_balance < 0:
+            raise ValueError('Amount of balance should be positive.')
         serial_number = cls.serial_number_creator()
         cvv2 = cls.cvv2_creator()
         password = cls.password_creator()
-        user = cls(input_owner_name, input_bank, input_balance, serial_number, cvv2, password)
-        save(vars(user))
-        return user
+        account = cls(input_owner_name, input_bank, input_balance, serial_number, cvv2, password)
+        save(vars(account))
+        return account
         #this serial number should save in user_accounts!!!
 
     def __str__(self) -> str:
@@ -85,7 +87,7 @@ Password      >>>   {self.__password}\n\
 Balance       >>>   {self.__balance:,}"
 
     @classmethod
-    def show_account(cls, serial_number: str) -> str:
+    def show_account(cls, serial_number: str) -> 'BankAccount':
         """
         show all information of each bank account
 
