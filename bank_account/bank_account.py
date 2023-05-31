@@ -1,5 +1,5 @@
 from uuid import uuid4
-from bank_account.bank_extra import save_bank_account,get_bank_database,delete_bank_account, get_bank_account_object
+from bank_extra import save_bank_account,get_bank_database,delete_bank_account, get_bank_account_object
 
 class BankAccount:
 
@@ -130,7 +130,8 @@ Balance       >>>   {self.__balance:,}"
 
         Args:
             amount (int): and must be greater than 0
-
+            password (str): required password of the account that
+            wants to withdraw
         Raises:
             ValueError: will raise when the Args condition are not ready
             ValueError: will raise when there is not enough amount of money
@@ -163,8 +164,18 @@ Balance       >>>   {self.__balance:,}"
         Args:
             other (BankAccount): an object from BankAccount class
             that its account take the money is deposited
+            
             amount (int): the amount of money that will transfer
             (excluding bank transfer fees)
+
+            password (str): required password of sender account
+
+            cvv2 (str): required cvv2 of sender account
+
+        Raises:
+            ValueError: in cases that cvv2 entered incorrect
+            ValueError: in cases that amount of money entered
+            less than 0 ( !! amount < 0 !!)
         """
         if cvv2 != self.cvv2:
             raise ValueError("Incorrect CVV2")
