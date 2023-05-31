@@ -72,14 +72,22 @@ class Cinema:
         # self.cinema_serial_bank_account = ...
 
     @staticmethod
-    def show_which_cinema(movie_id):
-        sessions = list(get_session_database().values())
-        for session in sessions:
-            if session['movie_id'] == movie_id:
-                cinema = get_cinema_object(session['cinema_id'])
-                print(f"{cinema['cinema_id']} - {cinema['name']}")
-            else:
-                print('not found cinema for this movie')
+    def show_which_cinema(movie_id, username):
+        birthdate = datetime.strptime(get_object(username)['birthdate'],  "%Y-%m-%d")
+        current_date = datetime.now()
+        age = current_date - birthdate
+        years = age.days // 365
+        age_limit = get_movie_object(movie_id)['age_limit']
+        if years >= age_limit:
+            sessions = list(get_session_database().values())
+            for session in sessions:
+                if session['movie_id'] == movie_id:
+                    cinema = get_cinema_object(session['cinema_id'])
+                    print(f"{cinema['cinema_id']} - {cinema['name']}")
+                else:
+                    print('not found cinema for this movie')
+        else:
+            print('your age is lower than age limit . you dont take this movie')
 
     @staticmethod
     def change_cinema_account(serial_number: str) -> None:
@@ -290,10 +298,10 @@ class Ticket:
 
     @classmethod
     def show_ticket(cls, owner_username, session_id):
+        user = get_object(owner_username)
         session = get_session_object(session_id)
         if int(session['capacity']) >= 1:
             price = int(session['price'])
-            user = get_object(owner_username)
             discount = cls.apply_discount(owner_username)
             final_price = price * (1-discount)
             if user['cinema_debit_card'] >= final_price:
