@@ -230,8 +230,6 @@ class Session:
             last_id = 1
         return str(last_id)
 
-Session.show_which_session('1', '1', '1')
-
 
 class Ticket:
     def __init__(self, ticket_id, session_id, username_owner):
@@ -270,7 +268,7 @@ class Ticket:
             user = get_object(owner_username)
             price = int(session['price'])
             discount = 0
-            if cls.is_birthday(int(user['birthdate'])):
+            if cls.is_birthday(user['birthdate']):
                 discount += 0.5
             discount += cls.calculate_discount(price, user['debit_card_type'])
             final_price = price * (1-discount)
@@ -307,6 +305,9 @@ class Ticket:
         except:
             last_id = 1
         return str(last_id)
+
+
+Ticket.show_ticket('saba', '2')
 
 
 class Subscription:

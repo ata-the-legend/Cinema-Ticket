@@ -1,4 +1,4 @@
-import uuid, hashlib
+import uuid, hashlib, re as regex
 from extra import save, get_object, delete
 from datetime import datetime
 from enum import Enum
@@ -40,6 +40,11 @@ class User:
 
     def show_bank_account(self):
         ...
+
+    @staticmethod
+    def validate_phone_number(number):
+        pattern = r"^(?:\+98|0)?9\d{9}$"
+        return bool(regex.match(pattern, number))
 
     @staticmethod
     def validate_pass(password: str) -> None:
