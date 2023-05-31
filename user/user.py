@@ -1,9 +1,9 @@
 import uuid, hashlib, re as regex
-from user.user_extra import save, get_object, delete
+from .user_extra import save, get_object, delete
 from datetime import datetime
 from enum import Enum
 import time
-from user.custom_exception import PasswordError, UsernameError, RegisterError, LoginError
+from .custom_exception import PasswordError, UsernameError, RegisterError, LoginError
 
 
 class UserRole(Enum):
@@ -116,7 +116,7 @@ class User:
             user_id = str(uuid.uuid4())
             signup_datetime = str(datetime.now())
             user_role = UserRole.PUBLIC
-            user = User(username, password, birthdate, user_id, signup_datetime, user_role, 0,phone_number)
+            user = User(username, password, birthdate, user_id, signup_datetime, user_role, phone_number=phone_number)
             save(vars(user))
             return user
 

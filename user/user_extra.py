@@ -59,4 +59,4 @@ def get_object(username:str) -> dict | None:
             user = person_dict[username]
             return user
     except Exception as e:
-        raise e
+        return None
