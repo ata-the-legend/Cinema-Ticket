@@ -19,7 +19,7 @@ class UserRole(Enum):
 
 class User:
     def __init__(self, username: str, password: str, birthdate: str, user_id: str, signup_datetime: str,
-                 user_role: UserRole, debit_card_type: DebitCardType, phone_number: str = None) -> None:
+                 user_role: UserRole, debit_card_type: DebitCardType, bank_accounts: list = [], phone_number: str = None) -> None:
 
         """
         this is initializer for User class
@@ -36,7 +36,7 @@ class User:
         self.signup_datetime = signup_datetime
         self.user_role = user_role.value
         self.cinema_debit_card = 0
-        self.bank_accounts = []
+        self.bank_accounts = bank_accounts
         self.debit_card_type = debit_card_type.value
 
     def show_bank_account(self):
@@ -93,7 +93,7 @@ class User:
             debit_card_type = DebitCardType(user['debit_card_type'])
             user_role = UserRole(user['user_role'])
             user = cls(user['username'], user['_User__password'], user['birthdate'], user['user_id'],
-                       user['signup_datetime'], user_role, debit_card_type, user['phone_number'])
+                       user['signup_datetime'], user_role, debit_card_type, user['bank_accounts'], user['phone_number'])
             return user
         else:
             return None ##??

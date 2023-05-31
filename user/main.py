@@ -2,7 +2,7 @@ from user import User
 import pwinput
 import os
 from time import sleep
-from ..bank_account.bank_account import BankAccount
+from bank_account.bank_account import BankAccount
 
 def clear_screen():
     if os.name == 'posix':
@@ -123,8 +123,8 @@ def bank_operation(serial: str):
                 if BankAccount.is_serial(destination_account):
                     try:
                         amount = int(input('Amount: '))
-                        password = pwinput(prompt='Password for this account: ', mask='*')
-                        cvv2 = pwinput(prompt='CVV2 for this account: ', mask='*')
+                        password = pwinput.pwinput(prompt='Password for this account: ', mask='*')
+                        cvv2 = pwinput.pwinput(prompt='CVV2 for this account: ', mask='*')
                         user_account.transfer_to_another(BankAccount.show_account(destination_account), amount, password, cvv2)
                     except ValueError as e:
                         print(str(e))
@@ -136,20 +136,7 @@ def bank_operation(serial: str):
                 else:
                     print('Invalid account serial!')
                     sleep(3)
-    # create account --> serial , pass
-        #input --bank name(menu) --balance
-        #save in user accounts
-    # show account --> for user.accounts print(show account
-    # bank oprations
-        #input --serial
-        #useraccount --> show account
-        # add
-            #inp --int(ammount
-        # sub
-            #input --int(amount --pass
-        # tranfer
-            #input --other account --int(amount) --pass --cvv2 
-            #userother --> show account
+ 
 
 def bank(user: User):
     while True:
@@ -225,6 +212,8 @@ def bank(user: User):
                 print('invalid choice!')
  
 
+def cinema(user):
+    print('------------------------- Cinema ---------------------------')
 
 def main():
     while True:
@@ -297,8 +286,8 @@ def main():
                                 bank(user)
 
                             case '5':
-                                cinema()
-                                print('------------------------- Cinema ---------------------------')
+                                cinema(user)
+                                
                             case _:
                                 print('invalid choice!')
 
