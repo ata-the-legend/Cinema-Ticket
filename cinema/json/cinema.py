@@ -4,6 +4,7 @@ from cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_d
     save_session, get_session_database, get_session_object, delete_session, \
     save_ticket, get_ticket_database, get_ticket_object, delete_ticket, \
     save_user_subscription, get_user_subscription_database, delete_user_subscription, get_user_subscription_object
+from bank_account.bank_extra import get_bank_account_object
 from bank_account.bank_account import BankAccount
 from user.user_extra import get_object, delete,save
 from user.user import User, UserRole
@@ -60,7 +61,8 @@ class Movie:
 
 
 class Cinema:
-    cinema_bank_account =
+    cinema_bank_account = ...
+
     def __init__(self,cinema_id, name, location, working_hours):
         self.name = name
         self.location = location
@@ -87,7 +89,7 @@ class Cinema:
 
     @classmethod
     def charge_debit_card(cls,username:str, amount:str, serial_number:str, password:str, cvv2:str):
-        bank_account = get_bank_account(serial_number)
+        bank_account = get_bank_account_object(serial_number)
         if bank_account['password'] == password and bank_account['cvv2'] == cvv2:
             BankAccount.transfer_to_another(cls.cinema_bank_account, serial_number, password, cvv2)
             user = get_object(username)
