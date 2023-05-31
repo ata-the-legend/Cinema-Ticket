@@ -3,6 +3,7 @@ import pwinput
 import os
 from time import sleep
 from bank_account.bank_account import BankAccount
+from cinema import cinema
 
 def clear_screen():
     if os.name == 'posix':
@@ -25,8 +26,11 @@ def sign_up():
         else:
             User.create_user(username, password, birthdate, phone_number)
         print('\n--- Your registration was successful ---\n')
+        input("continue? ")
+        return True
     except Exception as e:
         print(str(e))
+        return False
 
 
 def login():
@@ -214,6 +218,7 @@ def bank(user: User):
 
 def cinema(user):
     print('------------------------- Cinema ---------------------------')
+    cinema
 
 def main():
     while True:

@@ -1,4 +1,4 @@
-from cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_database,\
+from .cinema_extra import save_movie, get_movie_object, delete_movie, get_movie_database,\
     save_cinema, get_cinema_database,get_cinema_object,delete_cinema,\
     save_salon, get_salon_database,get_salon_object, delete_salon,\
     save_session, get_session_database, get_session_object, delete_session, \
@@ -61,7 +61,7 @@ class Movie:
 
 
 class Cinema:
-    cinema_bank_account = ...
+    cinema_bank_account = '2450-9251-8223-8571'
 
     def __init__(self,cinema_id, name, location, working_hours):
         self.name = name
