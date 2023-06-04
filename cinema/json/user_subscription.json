@@ -16,5 +16,11 @@
         "owner_username": "ramin73",
         "expire_date": null,
         "transition_count": null
+    },
+    "root": {
+        "level": "bronze",
+        "owner_username": "root",
+        "expire_date": null,
+        "transition_count": null
     }
 }

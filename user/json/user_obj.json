@@ -48,15 +48,28 @@
             "2450-9251-8223-8571"
         ]
     },
+    "root": {
+        "user_id": "3a33f4d9-2993-4a53-bcf8-bd222b29d20a",
+        "username": "root",
+        "phone_number": null,
+        "_User__password": "4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2",
+        "birthdate": "2002-5-28",
+        "signup_datetime": "2023-06-04 15:44:14.730277",
+        "user_role": 1,
+        "cinema_debit_card": 0,
+        "bank_accounts": []
+    },
     "ramin73": {
         "user_id": "792e513f-ef31-44aa-9d34-3b5576fab04a",
         "username": "ramin73",
-        "phone_number": "09388082273",
+        "phone_number": "09123456789",
         "_User__password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
         "birthdate": "2002-5-28",
         "signup_datetime": "2023-06-04 12:04:02.459307",
-        "user_role": 0,
-        "cinema_debit_card": 0,
-        "bank_accounts": []
+        "user_role": 1,
+        "cinema_debit_card": 9930000,
+        "bank_accounts": [
+            "1265-5326-5567-7509"
+        ]
     }
 }
