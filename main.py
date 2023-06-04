@@ -1,4 +1,5 @@
 from user.user import User
+from user.user_extra import get_object
 import pwinput
 import os
 from time import sleep
@@ -6,12 +7,14 @@ from bank_account.bank_account import BankAccount
 from cinema.cinema import Movie, Cinema, Salon, Session, Ticket, Subscription
 from cinema.cinema_extra import get_user_subscription_object
 
+
 def clear_screen():
     if os.name == 'posix':
         os.system('clear')
     else:
         # os.name = 'nt'
         os.system('cls')
+
 
 def sign_up():
     clear_screen()
@@ -47,6 +50,7 @@ def login():
         print(str(e))
         return (False , None)
 
+
 def edit_prof(user):
     clear_screen()
     print('------------------------- Change information ---------------------------')
@@ -68,6 +72,7 @@ def edit_prof(user):
         print(str(e))
         return False
 
+
 def edit_pass(user):
     clear_screen()
     print('------------------------- Change Password ---------------------------')
@@ -81,7 +86,8 @@ def edit_pass(user):
     except Exception as e:
         print(str(e))
         return False
-    
+
+
 def bank_operation(serial: str):
     user_account = BankAccount.show_account(serial)
     while True:
@@ -197,7 +203,7 @@ def bank(user: User):
                         print("Operation was unsuccessful!")
                         sleep(3)
                         break 
-                    
+
             case '2':
                 clear_screen()
                 print('Your available accounts:')
@@ -222,14 +228,14 @@ def bank(user: User):
  
 
 def cinema(user):
+    clear_screen()
     while True:
-        clear_screen()
         cinema_order = input(f'\n------------------------- Cinema ---------------------------\n'
                              f'hint : before select movies and buy ticket you must charge your Debit card!\n\n'
                              f'View and select movies and buy tickets ---------------> enter number (1)\n'
-                             f'Debit card--------------> enter number (2)\n'
-                             f'Management -------> enter number (3)\n'
-                             f'Back to main menu --------------> enter number (0)\n'
+                             f'Debit card--------------------------------------------> enter number (2)\n'
+                             f'Management -------------------------------------------> enter number (3)\n'
+                             f'Back to main menu ------------------------------------> enter number (0)\n'
                              f'\nPlease insert your choice : ')
         match cinema_order:
             case '0':
@@ -241,25 +247,40 @@ def cinema(user):
                     print(f'\n------------------------- Movies ---------------------------\n')
                     if Movie.show_movie():
                         print(Movie.show_movie())
-                        movie_id = input('\nPlease insert your selected movie id: ')
-                        try:
-                            print(Cinema.show_which_cinema(movie_id, user.username))
-                            cinema_id = input('\nPlease insert your selected cinema id: ')
-                            print(Salon.show_which_salon(movie_id, cinema_id))
-                            salon_id = input('\nPlease insert your selected salon id: ')
-                            print(Session.show_which_session(movie_id, cinema_id, salon_id))
-                            session_id = input('\nPlease insert your selected session id: ')
-                            print(Ticket.show_ticket(user.username, session_id))
-                            sure = input('are you sure to buy this ticket?(y/n)')
-                            if sure == 'y':
-                                Ticket.buy_ticket(user.username, session_id)
-                                print('your ticket reserved successfully')
-                                break
-                            else:
-                                print('operation canceled...!')
-
-                        except ValueError as e:
-                            print(e)
+                        movie_id = input('\nPlease insert your selected movie id'
+                                         '(Type n to return to the menu): ')
+                        if movie_id != 'n':
+                            try:
+                                print(Cinema.show_which_cinema(movie_id, user.username))
+                                cinema_id = input('\nPlease insert your selected cinema id: ')
+                                if cinema_id != 'n':
+                                    print(Salon.show_which_salon(movie_id, cinema_id))
+                                    salon_id = input('\nPlease insert your selected salon id: ')
+                                    if salon_id != 'n':
+                                        print(Session.show_which_session(movie_id, cinema_id, salon_id))
+                                        session_id = input('\nPlease insert your selected session id: ')
+                                        if session_id != 'n':
+                                            print(Ticket.show_ticket(user.username, session_id))
+                                            sure = input('are you sure to buy this ticket?(y/n)')
+                                            if sure == 'y':
+                                                Ticket.buy_ticket(user.username, session_id)
+                                                print('**** your ticket reserved successfully ****')
+                                                sleep(5)
+                                                break
+                                            else:
+                                                print('operation canceled...!')
+                                        else:
+                                            break
+                                    else:
+                                        break
+                                else:
+                                    break
+                            except ValueError as e:
+                                print(e)
+                                sleep(3)
+                                clear_screen()
+                        else:
+                            break
                     else:
                         print(' Movies list is empty ! ')
             case '2':
@@ -267,7 +288,7 @@ def cinema(user):
                 while True:
                     debit_order = input(f'\n------------------------- Debit card ---------------------------\n'
                                         f'your subscription level: {get_user_subscription_object(user.username)["level"]}\n'
-                                        f'Debit card inventory: {user.cinema_debit_card}\n\n'
+                                        f'Debit card inventory: {get_object(user.username)["cinema_debit_card"]}\n\n'
                                          f'Charge your debit card---------------> enter number (1)\n'
                                          f'Buy subscription-------------> enter number (2)\n'
                                          f'Back to main menu --------------> enter number (0)\n'
@@ -299,6 +320,8 @@ def cinema(user):
                             choices_level = input('please insert your choice (gold/silver):')
                             try:
                                 Subscription.buy_subscription(choices_level, user.username)
+                                print('**** your account subscription is updated ****')
+                                sleep(3)
                             except Exception as e:
                                 print(e)
                         case '0':
@@ -331,7 +354,10 @@ def cinema(user):
                                               f'\nPlease insert your choice : ')
                                     match movie_order:
                                         case '1':
-                                            print(Movie.show_movie())
+                                            for movie in Movie.show_movie() :
+                                                print(movie)
+                                            input('continue?')
+                                            clear_screen()
                                         case '2':
                                             name = input('name:')
                                             director = input('director:')
@@ -447,6 +473,7 @@ def cinema(user):
                                 print('invalid choice')
                     else:
                         print('you dont have access to this menu ! just Staff...')
+                        input('continue ? ')
                         break
             case _:
                 print('invalid choice!')
@@ -474,7 +501,8 @@ def main():
                     if input("Try again?(y/n): ").lower() == 'n':
                         break 
                     (login_flag, user) = login()
-                else:               
+                else:
+                    clear_screen()
                     while True:
                         clear_screen()
                         input_order = input(f'\n------------------------ Welcome {user.username} ----------------------'
@@ -521,6 +549,7 @@ def main():
                                 bank(user)
 
                             case '5':
+                                clear_screen()
                                 cinema(user)
                                 
                             case _:

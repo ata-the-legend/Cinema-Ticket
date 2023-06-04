@@ -50,8 +50,8 @@ class Movie:
     @staticmethod
     def show_movie():
         for id, movies in get_movie_database().items():
-            if id and movies :
-                return f'({id}) - {movies["name"]}'
+            if id and movies:
+                yield f'({id}) - {movies["name"]}'
             return None
 
     @staticmethod
@@ -83,21 +83,24 @@ class Cinema:
 
     @staticmethod
     def show_which_cinema(movie_id, username):
-        birthdate = datetime.strptime(get_object(username)['birthdate'],  "%Y-%m-%d")
-        current_date = datetime.now()
-        age = current_date - birthdate
-        years = age.days // 365
-        age_limit = get_movie_object(movie_id)['age_limit']
-        if years >= age_limit:
-            sessions = list(get_session_database().values())
-            for session in sessions:
-                if session['movie_id'] == movie_id:
-                    cinema = get_cinema_object(session['cinema_id'])
-                    return f"{cinema['cinema_id']} - {cinema['name']}"
-                else:
-                    raise ValueError('not found cinema for this movie')
+        if get_movie_object(movie_id):
+            birthdate = datetime.strptime(get_object(username)['birthdate'],  "%Y-%m-%d")
+            current_date = datetime.now()
+            age = current_date - birthdate
+            years = age.days // 365
+            age_limit = int(get_movie_object(movie_id)['age_limit'])
+            if years >= age_limit:
+                sessions = list(get_session_database().values())
+                for session in sessions:
+                    if session['movie_id'] == movie_id:
+                        cinema = get_cinema_object(session['cinema_id'])
+                        return f"({cinema['cinema_id']}) - {cinema['name']}"
+                    else:
+                        raise ValueError('not found cinema for this movie')
+            else:
+                raise ValueError('your age is lower than age limit . you cant select this movie')
         else:
-            raise ValueError('your age is lower than age limit . you cant select this movie')
+            raise ValueError('The entered ID is not correct')
 
     @classmethod
     def charge_debit_card(cls,username:str, amount:str, serial_number:str, password:str, cvv2:str):
@@ -107,7 +110,7 @@ class Cinema:
             bank_account.transfer_to_another(cinema_bank_account, int(amount), password, cvv2)
             user = get_object(username)
             debit = user['cinema_debit_card']
-            new_inventory = debit + int(amount)
+            new_inventory = int(debit) + int(amount)
             user['cinema_debit_card'] = new_inventory
             delete(username)
             save(user)
@@ -167,13 +170,15 @@ class Salon:
     @staticmethod
     def show_which_salon(movie_id, cinema_id):
         sessions = list(get_session_database().values())
-
-        for session in sessions:
-            if session['movie_id'] == movie_id and session['cinema_id'] == cinema_id:
-                salon = get_salon_object(session['salon_id'])
-                return f"({salon['salon_id']}) - {salon['name']}"
-            else:
-                raise ValueError('not found salon for this movie')
+        if get_cinema_object(cinema_id):
+            for session in sessions:
+                if session['movie_id'] == movie_id and session['cinema_id'] == cinema_id:
+                    salon = get_salon_object(session['salon_id'])
+                    return f"({salon['salon_id']}) - {salon['name']}"
+                else:
+                    raise ValueError('not found salon for this cinema')
+        else:
+            raise ValueError('m')
 
     @staticmethod
     def generate_id():
@@ -226,7 +231,7 @@ class Session:
                session['salon_id'] == salon_id:
 
                 session = get_session_object(session['session_id'])
-                return f"({session['salon_id']}) - |{session['start_time']} to {session['end_time']} \n      "\
+                return f"({session['session_id']}) - |{session['start_time']} to {session['end_time']} \n      "\
                        f"|capacity status : {session['capacity']} empty seats\n      "\
                        f"|price : {session['price']}"
             else:
@@ -261,7 +266,6 @@ class Ticket:
     @staticmethod
     def subscription_discount(owner_username):
         subscription = get_user_subscription_object(owner_username)
-        print(subscription)
         level = subscription['level']
 
         if level == "bronze":

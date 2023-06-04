@@ -10,5 +10,17 @@
         "owner_username": "pouriya",
         "expire_date": "2023-06-30",
         "transition_count": null
+    },
+    "ramin73": {
+        "level": "bronze",
+        "owner_username": "ramin73",
+        "expire_date": null,
+        "transition_count": null
+    },
+    "root": {
+        "level": "bronze",
+        "owner_username": "root",
+        "expire_date": null,
+        "transition_count": null
     }
 }

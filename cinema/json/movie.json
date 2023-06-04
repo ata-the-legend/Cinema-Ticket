@@ -16,5 +16,14 @@
         "duration_time": "3:00",
         "age_limit": "12",
         "product_year": "2007"
+    },
+    "3": {
+        "movie_id": "3",
+        "name": "zahkm kari2",
+        "director": "amo hasan",
+        "description": "...",
+        "duration_time": "2.10",
+        "age_limit": "15",
+        "product_year": "1402"
     }
 }
