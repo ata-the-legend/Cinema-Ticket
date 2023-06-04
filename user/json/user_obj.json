@@ -47,5 +47,16 @@
         "bank_accounts": [
             "2450-9251-8223-8571"
         ]
+    },
+    "ramin73": {
+        "user_id": "792e513f-ef31-44aa-9d34-3b5576fab04a",
+        "username": "ramin73",
+        "phone_number": "09388082273",
+        "_User__password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+        "birthdate": "2002-5-28",
+        "signup_datetime": "2023-06-04 12:04:02.459307",
+        "user_role": 0,
+        "cinema_debit_card": 0,
+        "bank_accounts": []
     }
 }
